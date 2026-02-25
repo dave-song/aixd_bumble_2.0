@@ -4,10 +4,65 @@
 
 ---
 
+## Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Open http://localhost:3000
+```
+
+---
+
 ## Current Progress
 
-**As of February 17, 2026:**
+**As of February 25, 2026:**
 - ✅ Set up the Figma to Cursor MCP pipeline
+- ✅ Implemented interactive mobile web prototype with 32 screens
+- ✅ Built onboarding flow (gender, interests, life, values, notifications)
+- ✅ Created swipeable profile cards with gesture animations
+- ✅ Integrated Beeline AI overlay with multiple states
+- ✅ Implemented match screen, chat list, and chat detail views
+
+---
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+
+---
+
+## Project Structure
+
+```
+├── src/
+│   ├── app/                    # Next.js App Router pages
+│   │   ├── page.tsx            # Splash screen
+│   │   ├── onboarding/         # Onboarding flow (5 screens)
+│   │   ├── discover/           # Main swiping view
+│   │   ├── profile/            # User profile tab
+│   │   ├── chats/              # Chat list & detail
+│   │   ├── match/              # Match screen
+│   │   └── liked/              # Liked You tab
+│   ├── components/
+│   │   ├── layout/             # PhoneFrame, StatusBar, BottomNav
+│   │   ├── cards/              # ProfileCard, SwipeIndicator
+│   │   ├── beeline/            # BeelineOverlay, BeelineBanner
+│   │   ├── chat/               # ChatBubble, ChatInput, BeelineModal
+│   │   └── ui/                 # Button, Chip, ProgressBar, Toggle
+│   └── lib/                    # Mock data and constants
+├── documents/                  # Design briefs and presentations
+├── public/                     # Static assets
+└── package.json
+```
 
 ---
 
