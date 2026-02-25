@@ -1,0 +1,154 @@
+---
+description: Bumble Beeline project context and implementation details
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Bumble Beeline - Project Context
+
+## Overview
+
+This is a **mobile web prototype** for a redesigned Bumble dating app featuring "Beeline" - an AI-powered matchmaking assistant. The prototype was built from 32 Figma designs as part of the A-IXD (Advanced Interaction Design) Project 2.
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4 (CSS-based config, not JS)
+- **Animations**: Framer Motion
+- **Gestures**: @use-gesture/react
+- **Icons**: Lucide React
+
+## Project Structure
+
+```
+src/
+├── app/                        # Next.js App Router
+│   ├── page.tsx               # Splash screen (/)
+│   ├── layout.tsx             # Root layout
+│   ├── globals.css            # Tailwind + custom styles
+│   ├── onboarding/
+│   │   ├── gender/page.tsx    # Gender selection
+│   │   ├── interests/page.tsx # Interest chips (5 max)
+│   │   ├── life/page.tsx      # Life experiences
+│   │   ├── values/page.tsx    # Quality selection
+│   │   └── notifications/page.tsx
+│   ├── discover/page.tsx      # Main swiping view with Beeline
+│   ├── profile/page.tsx       # User profile (Kyle)
+│   ├── chats/
+│   │   ├── page.tsx           # Chat list
+│   │   └── [id]/page.tsx      # Chat detail
+│   ├── match/[id]/page.tsx    # Match screen
+│   └── liked/page.tsx         # Liked You tab
+├── components/
+│   ├── layout/
+│   │   ├── PhoneFrame.tsx     # 390x844 iPhone wrapper
+│   │   ├── StatusBar.tsx      # iOS status bar
+│   │   └── BottomNav.tsx      # 5-tab navigation
+│   ├── cards/
+│   │   ├── ProfileCard.tsx    # Swipeable profile card
+│   │   └── SwipeIndicator.tsx # Like/Pass feedback
+│   ├── beeline/
+│   │   ├── BeelineOverlay.tsx # AI overlay (collapsed/expanded/voice/done)
+│   │   ├── BeelineBanner.tsx  # "Profile ready" notification
+│   │   └── BeelineQuestion.tsx
+│   ├── chat/
+│   │   ├── ChatBubble.tsx
+│   │   ├── ChatInput.tsx
+│   │   └── BeelineModal.tsx   # "Call Beeline" assist
+│   └── ui/
+│       ├── Button.tsx
+│       ├── Chip.tsx           # Selectable tags
+│       ├── ProgressBar.tsx    # Onboarding progress
+│       ├── Toggle.tsx
+│       └── BumbleLogo.tsx
+└── lib/
+    ├── mockData.ts            # Profiles, interests, qualities, matches
+    └── constants.ts           # Colors, dimensions, config
+```
+
+## Implemented Screens (32 total states)
+
+### Onboarding Flow
+
+1. Splash screen with Bumble logo
+2. Gender selection (Woman/Man/Nonbinary)
+3. Interest selection (chip grid, 5 max)
+4. Life experiences (Travel/Education/Working categories)
+5. Values/qualities selection
+6. Notification permission prompt
+
+### Main App
+
+7. Discover/People view with swipeable cards
+8. Profile card with Beeline overlay (collapsed)
+9. Profile card with Beeline question (expanded)
+10. Profile card with Beeline voice input
+11. Profile card with Beeline "Done" state
+12. Swipe right animation (checkmark)
+13. Swipe left animation (X)
+14. "Beeline profile ready" banner
+
+### Profile Tab
+
+15. Kyle's profile with "Give me a second to read the room"
+16. Profile tabs (Beeline, Dating advice, Photo insights)
+
+### Match & Chat
+
+17. "What a match!" screen with photo overlap
+18. Chat list with matches row
+19. Chat detail view
+20. Chat with Beeline assist modal
+
+## Key Features Implemented
+
+- **Swipe gestures**: Framer Motion drag with threshold detection
+- **Beeline AI overlay**: Multiple states (collapsed, question, voice, done)
+- **Animated transitions**: Page transitions, card animations
+- **Mobile viewport**: 390x844px iPhone frame for desktop viewing
+- **iOS-style UI**: Status bar, bottom navigation, rounded corners
+
+## Mock Data (src/lib/mockData.ts)
+
+- **Profiles**: Hari (27, CMU), Elena (28, Johns Hopkins)
+- **User profile**: Kyle (27, "The Domestic Daredevil")
+- **18 interests** with emojis
+- **13 life experiences** in 3 categories
+- **17 qualities/values**
+- **3 Beeline questions**
+
+## Figma Source
+
+File: `A-IXD:P2` (x2YbhT1OpsU23Fh7Qgqz0i)
+Node IDs implemented: 1117-12519 through 1128-22857 (32 nodes)
+
+## Color Palette
+
+- Bumble Yellow: `#FFC629`
+- Beeline Yellow (light): `#FFF4D4`
+- Coral gradient: `#FF6B6B` → `#FF8E53`
+- Text primary: `#1A1A1A`
+- Text secondary: `#6B6B6B`
+
+## Running the Project
+
+```bash
+npm install
+npm run dev
+# Open http://localhost:3000
+```
+
+## Known Considerations
+
+- Tailwind v4 uses CSS-based config (`@theme` in globals.css), not tailwind.config.js
+- The splash screen currently uses inline styles for reliability
+- Images use Unsplash placeholders (may need to be replaced with actual assets)
+
+## Next Steps (Potential)
+
+- Add actual profile images from Figma exports
+- Implement more Beeline conversation flows
+- Add haptic feedback for mobile
+- Connect to real backend/API
+- Add more transitions between screens
