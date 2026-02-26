@@ -1,10 +1,16 @@
-# Bumble Beeline
+# Bumble Beeline - AI-Powered Matchmaking Prototype
 
-> A living AI wingman that learns your heart in real-time to skip the swipe and find your match.
+A mobile web prototype for a redesigned Bumble dating app featuring "Beeline" - an AI-powered matchmaking assistant. Built from Figma designs as part of the A-IXD (Advanced Interaction Design) Project 2.
 
----
+## Tech Stack
 
-## Quick Start
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4 (CSS-based config)
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+
+## Getting Started
 
 ```bash
 # Install dependencies
@@ -13,128 +19,97 @@ npm install
 # Run development server
 npm run dev
 
-# Open http://localhost:3000
+# Build for production
+npm run build
+
+# Start production server
+npm start
 ```
 
----
-
-## Current Progress
-
-**As of February 25, 2026:**
-
-- ✅ Set up the Figma to Cursor MCP pipeline
-- ✅ Implemented interactive mobile web prototype with 32 screens
-- ✅ Built onboarding flow (gender, interests, life, values, notifications)
-- ✅ Created swipeable profile cards with gesture animations
-- ✅ Integrated Beeline AI overlay with multiple states
-- ✅ Implemented match screen, chat list, and chat detail views
-
----
-
-## Tech Stack
-
-- **Framework**: Next.js 16 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS v4
-- **Animations**: Framer Motion
-- **Icons**: Lucide React
-
----
+Open [http://localhost:3000](http://localhost:3000) to view the prototype.
 
 ## Project Structure
 
 ```
-├── src/
-│   ├── app/                    # Next.js App Router pages
-│   │   ├── page.tsx            # Splash screen
-│   │   ├── onboarding/         # Onboarding flow (5 screens)
-│   │   ├── discover/           # Main swiping view
-│   │   ├── profile/            # User profile tab
-│   │   ├── chats/              # Chat list & detail
-│   │   ├── match/              # Match screen
-│   │   └── liked/              # Liked You tab
-│   ├── components/
-│   │   ├── layout/             # PhoneFrame, StatusBar, BottomNav
-│   │   ├── cards/              # ProfileCard, SwipeIndicator
-│   │   ├── beeline/            # BeelineOverlay, BeelineBanner
-│   │   ├── chat/               # ChatBubble, ChatInput, BeelineModal
-│   │   └── ui/                 # Button, Chip, ProgressBar, Toggle
-│   └── lib/                    # Mock data and constants
-├── documents/                  # Design briefs and presentations
-├── public/                     # Static assets
-└── package.json
+src/
+├── app/                          # Next.js App Router
+│   ├── page.tsx                  # Splash screen (/)
+│   ├── layout.tsx                # Root layout
+│   ├── globals.css               # Tailwind + design tokens
+│   ├── onboarding/
+│   │   ├── gender/page.tsx       # Gender selection
+│   │   ├── interests/page.tsx    # Interest selection (5 max)
+│   │   ├── life/page.tsx         # Life experiences
+│   │   ├── values/page.tsx       # Values/qualities
+│   │   └── notifications/page.tsx
+│   └── discover/page.tsx         # Main profile view with Beeline
+├── components/
+│   ├── layout/
+│   │   ├── PhoneFrame.tsx        # 430x932 iPhone wrapper
+│   │   ├── StatusBar.tsx         # iOS status bar
+│   │   └── BottomNav.tsx         # 5-tab navigation
+│   ├── ui/
+│   │   ├── Button.tsx            # Bumble button variants
+│   │   ├── TitleSub.tsx          # Title + subtitle component
+│   │   ├── Chip.tsx              # Selectable tag chips
+│   │   ├── ProgressBar.tsx       # Onboarding progress
+│   │   └── BumbleLogo.tsx        # Bumble bee logo
+│   ├── cards/
+│   │   ├── ProfileCard.tsx       # Profile card with sections
+│   │   └── SwipeButtons.tsx      # Like/Pass buttons
+│   └── beeline/
+│       └── BeelineOverlay.tsx    # AI overlay (4 states)
+├── lib/
+│   └── constants.ts              # Colors, mock data, config
+└── public/
+    └── icons/                    # SVG icons
 ```
 
----
+## Implemented Screens
 
-## Project Overview
+### Onboarding Flow
+1. **Splash Screen** - Bumble logo with fade-in animation
+2. **Gender Selection** - "Alex is a great name"
+3. **Interests** - Choose 5 interests with emoji chips
+4. **Life Experiences** - Select up to 3 shared experiences
+5. **Values** - Choose 3 qualities you value
+6. **Notifications** - Permission prompt with bell icon
 
-This project is part of the Advanced Interaction Design (A-IXD) Project 2, focusing on enhancing the Bumble dating app experience. Rather than implementing proximity-based location features, this concept proposes a paradigm shift from "Digital Catalog" to "Digital Matchmaker" through an AI-powered matching system called **Beeline**.
+### Main App
+7. **Discover/People** - Profile card with Beeline overlay
+   - Collapsed state (banner)
+   - Expanded with question
+   - Voice recording mode
+   - Done state with confirmation
 
-### The Problem
+## Design Tokens
 
-- Users are overwhelmed with "swiping fatigue" without getting meaningful matches
-- New features like Open Move lack visibility, leading to confusion
-- Absence of integrated tools for venues or activities leads to indecisive conversations
-- Users are matched based on a static snapshot from initial onboarding, rather than who they've evolved into today
+```css
+--bumble-black: #202020
+--bumble-accent: #ffd93a
+--bumble-yellow: #ffdb5b
+--bumble-gray: #575656
+--frame-width: 430px
+--frame-height: 932px
+```
 
-### The Concept
+## Figma Source
 
-**Beeline** is an evolving, conversational AI proxy that replaces "static profiles" with "dynamic chemistry." Instead of relying on a one-time onboarding quiz, Beeline lives in the app as a "nosy friend" that:
+- File: `A-IXD:P2` (x2YbhT1OpsU23Fh7Qgqz0i)
+- 11 frames implemented from node IDs:
+  - 232:7260 (Splash)
+  - 242:23129, 242:23135, 242:23146, 242:23152 (Onboarding headers)
+  - 232:7374 (Notifications)
+  - 1090:11880, 1091:12227, 1097:12808, 1100:9847, 1097:13562 (Profile + Beeline states)
 
-- Checks in after dates
-- Asks about your day
-- Learns your evolving preferences
+## Features
 
-Once it truly understands you, it enters a virtual "Hive" to interview the Wingmen (AI agents) of other users, conducting thousands of simulated conversations to return with only the most compatible, curated matches.
+- **Animated Transitions** - Framer Motion for smooth page and component animations
+- **Beeline AI Overlay** - 4-state interactive overlay with voice recording UI
+- **Mobile-First Design** - 430x932px iPhone frame for desktop viewing
+- **iOS-Style UI** - Status bar, bottom navigation, rounded corners
+- **Interactive Chips** - Animated selection with haptic-like feedback
 
-### How It Works
+## License
 
-1. **Observation Phase**: The user goes about their normal Bumble experience. Occasionally, after a match or a long chat session, Beeline chimes in with quick, low-friction questions to understand preferences.
-
-2. **Evolution**: Over 30 days, Beeline builds a "Rich Context Profile" that captures personality nuances, not just data points.
-
-3. **Proxy Search**: When the user feels swipe fatigue, they trigger "Beeline Mode." The system conducts hundreds of "Proxy Chats" with other users' AI agents.
-
-4. **The Outcome**: Beeline returns with curated matches—"I've talked to 500 Bees today. I think I found 'The One' for who you are today, not who you were when you signed up."
-
-### Why Not Proximity-Based?
-
-Research shows a significant negative correlation between Adoption Rate and Conversion Rate for proximity-based features. As more users try such features, the conversion rate actually drops. This concept leans into Bumble's brand value of **intentionality** over spontaneous location-based encounters.
-
----
-
-## Business Context
-
-### Goals
-
-- Increase overall platform active user base
-- Improve conversion rate of non-paying users to paying customers
-- Establish Bumble as a platform with market-leading user experience
-
-### Target Users
-
-- Existing, non-paying users who opt in for location/data services
-- 90% are under 35
-- Active enough to receive matches regularly
-- Not currently paying for Premium or Premium+
-
-### Competitors
-
-- **Traditional**: Tinder, Hinge, OkCupid, eHarmony, Badoo, Raya
-- **Non-traditional**: Instagram, Snapchat, Meetup, LinkedIn
-
----
-
-## Documentation
-
-Additional project documentation can be found in the `/documents` folder:
-
-- `Advanced IXD P2.1 Design Brief (1).pdf` - Detailed design brief and project analysis
-- `A-IXD Project 2 Concept Pitch.pdf` - Concept pitch presentation
-
----
-
-## Author
-
-Dave Song
+This is a prototype for educational purposes as part of A-IXD Project 2.

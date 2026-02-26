@@ -1,145 +1,145 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { PhoneFrame, StatusBar } from '@/components/layout';
-import { ProgressBar, Chip, Toggle } from '@/components/ui';
-import { ChevronRight } from 'lucide-react';
-import { lifeExperiences } from '@/lib/mockData';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { PhoneFrame, StatusBar } from "@/components/layout";
+import { TitleSub, Button, Chip, ProgressBar } from "@/components/ui";
+import { ChevronLeft } from "lucide-react";
+import { lifeExperiences } from "@/lib/constants";
+
+const MAX_SELECTIONS = 3;
 
 export default function LifePage() {
   const router = useRouter();
-  const [selectedExperiences, setSelectedExperiences] = useState<string[]>([]);
-  const [showOnProfile, setShowOnProfile] = useState(true);
+  const [selected, setSelected] = useState<string[]>([]);
+
+  const allExperiences = [
+    ...lifeExperiences.travel,
+    ...lifeExperiences.education,
+    ...lifeExperiences.personal,
+  ];
 
   const toggleExperience = (id: string) => {
-    if (selectedExperiences.includes(id)) {
-      setSelectedExperiences(selectedExperiences.filter((e) => e !== id));
-    } else if (selectedExperiences.length < 3) {
-      setSelectedExperiences([...selectedExperiences, id]);
+    if (selected.includes(id)) {
+      setSelected(selected.filter((s) => s !== id));
+    } else if (selected.length < MAX_SELECTIONS) {
+      setSelected([...selected, id]);
     }
   };
 
-  const handleNext = () => {
-    router.push('/onboarding/values');
+  const handleContinue = () => {
+    router.push("/onboarding/values");
   };
-
-  const travelExperiences = lifeExperiences.filter((e) => e.category === 'travel');
-  const educationExperiences = lifeExperiences.filter((e) => e.category === 'education');
-  const workingExperiences = lifeExperiences.filter((e) => e.category === 'working');
 
   return (
     <PhoneFrame>
-      <div className="h-full flex flex-col bg-white">
+      <div className="relative w-full h-full bg-white flex flex-col">
         <StatusBar />
-        
-        {/* Progress bar */}
-        <div className="px-6 pt-4">
-          <ProgressBar steps={5} currentStep={3} />
-        </div>
 
-        {/* Content */}
-        <div className="flex-1 px-6 pt-8 overflow-auto hide-scrollbar pb-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <h1 className="text-[28px] font-bold text-black leading-tight">
-              Your life
-            </h1>
-            <p className="text-gray-600 mt-2 text-base leading-relaxed">
-              Pick <span className="font-semibold">up to 3</span> to find friends with <span className="font-semibold">shared experiences.</span>
-            </p>
-          </motion.div>
-
-          {/* Toggle */}
-          <div className="mt-6">
-            <Toggle
-              checked={showOnProfile}
-              onChange={setShowOnProfile}
-              label="Shown on my profile"
-            />
-          </div>
-
-          {/* Travel */}
-          <div className="mt-6">
-            <h2 className="text-base font-semibold text-black mb-3">Travel</h2>
-            <div className="flex flex-wrap gap-2">
-              {travelExperiences.map((exp) => (
-                <Chip
-                  key={exp.id}
-                  emoji={exp.emoji}
-                  label={exp.label}
-                  selected={selectedExperiences.includes(exp.id)}
-                  onSelect={() => toggleExperience(exp.id)}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="border-t border-gray-100 my-6" />
-
-          {/* Education */}
-          <div>
-            <h2 className="text-base font-semibold text-black mb-3">Education</h2>
-            <div className="flex flex-wrap gap-2">
-              {educationExperiences.map((exp) => (
-                <Chip
-                  key={exp.id}
-                  emoji={exp.emoji}
-                  label={exp.label}
-                  selected={selectedExperiences.includes(exp.id)}
-                  onSelect={() => toggleExperience(exp.id)}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="border-t border-gray-100 my-6" />
-
-          {/* Working */}
-          <div>
-            <h2 className="text-base font-semibold text-black mb-3">Working</h2>
-            <div className="flex flex-wrap gap-2">
-              {workingExperiences.map((exp) => (
-                <Chip
-                  key={exp.id}
-                  emoji={exp.emoji}
-                  label={exp.label}
-                  selected={selectedExperiences.includes(exp.id)}
-                  onSelect={() => toggleExperience(exp.id)}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom actions */}
-        <div className="p-6 flex items-center justify-end">
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">
-              {selectedExperiences.length}/3 selected
-            </span>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={handleNext}
-              className={`
-                w-14 h-14 rounded-full flex items-center justify-center
-                transition-colors duration-200
-                ${
-                  selectedExperiences.length > 0
-                    ? 'bg-black text-white'
-                    : 'bg-gray-200 text-gray-400'
-                }
-              `}
+        {/* Header with back button and progress */}
+        <div className="px-[20px] pt-[8px] pb-[16px]">
+          <div className="flex items-center gap-[12px] mb-[12px]">
+            <button
+              onClick={() => router.back()}
+              className="w-[32px] h-[32px] flex items-center justify-center"
             >
-              <ChevronRight size={24} />
-            </motion.button>
+              <ChevronLeft size={24} className="text-bumble-black" />
+            </button>
+            <ProgressBar current={3} total={5} className="flex-1" />
           </div>
+        </div>
+
+        {/* Title & Subtitle */}
+        <TitleSub
+          title="Your life"
+          subtitle={
+            <span>
+              Pick{" "}
+              <span className="font-medium text-bumble-black">up to 3</span> to
+              find friends with{" "}
+              <span className="font-medium text-bumble-black">
+                shared experiences.
+              </span>
+            </span>
+          }
+        />
+
+        {/* Life Experiences */}
+        <div className="flex-1 px-[20px] py-[16px] overflow-y-auto scrollbar-hide">
+          {/* Travel Section */}
+          <div className="mb-[24px]">
+            <h3 className="text-[14px] font-medium text-bumble-gray mb-[12px] uppercase tracking-wider">
+              Travel
+            </h3>
+            <div className="flex flex-wrap gap-[10px]">
+              {lifeExperiences.travel.map((exp) => (
+                <Chip
+                  key={exp.id}
+                  label={exp.label}
+                  selected={selected.includes(exp.id)}
+                  onClick={() => toggleExperience(exp.id)}
+                  disabled={
+                    !selected.includes(exp.id) &&
+                    selected.length >= MAX_SELECTIONS
+                  }
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Education Section */}
+          <div className="mb-[24px]">
+            <h3 className="text-[14px] font-medium text-bumble-gray mb-[12px] uppercase tracking-wider">
+              Education
+            </h3>
+            <div className="flex flex-wrap gap-[10px]">
+              {lifeExperiences.education.map((exp) => (
+                <Chip
+                  key={exp.id}
+                  label={exp.label}
+                  selected={selected.includes(exp.id)}
+                  onClick={() => toggleExperience(exp.id)}
+                  disabled={
+                    !selected.includes(exp.id) &&
+                    selected.length >= MAX_SELECTIONS
+                  }
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Personal Section */}
+          <div className="mb-[24px]">
+            <h3 className="text-[14px] font-medium text-bumble-gray mb-[12px] uppercase tracking-wider">
+              Personal
+            </h3>
+            <div className="flex flex-wrap gap-[10px]">
+              {lifeExperiences.personal.map((exp) => (
+                <Chip
+                  key={exp.id}
+                  label={exp.label}
+                  selected={selected.includes(exp.id)}
+                  onClick={() => toggleExperience(exp.id)}
+                  disabled={
+                    !selected.includes(exp.id) &&
+                    selected.length >= MAX_SELECTIONS
+                  }
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="px-[20px] pb-[40px]">
+          <div className="flex justify-between items-center mb-[12px]">
+            <span className="text-[14px] text-bumble-gray">
+              {selected.length}/{MAX_SELECTIONS} selected
+            </span>
+          </div>
+          <Button variant="primary" fullWidth onClick={handleContinue}>
+            Continue
+          </Button>
         </div>
       </div>
     </PhoneFrame>

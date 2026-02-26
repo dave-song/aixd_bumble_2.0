@@ -1,3 +1,3 @@
-export { default as PhoneFrame } from './PhoneFrame';
-export { default as StatusBar } from './StatusBar';
-export { default as BottomNav } from './BottomNav';
+export { PhoneFrame } from "./PhoneFrame";
+export { StatusBar } from "./StatusBar";
+export { BottomNav } from "./BottomNav";

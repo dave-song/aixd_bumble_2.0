@@ -1,81 +1,65 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { PhoneFrame, StatusBar } from '@/components/layout';
-import { Button } from '@/components/ui';
+import { useRouter } from "next/navigation";
+import { PhoneFrame, StatusBar } from "@/components/layout";
 
 export default function NotificationsPage() {
   const router = useRouter();
 
   const handleAllow = () => {
-    router.push('/discover');
+    router.push("/discover");
   };
 
   const handleNotNow = () => {
-    router.push('/discover');
+    router.push("/discover");
   };
 
   return (
     <PhoneFrame>
-      <div className="h-full flex flex-col bg-white">
+      <div className="relative w-full h-full bg-white flex flex-col">
         <StatusBar />
 
-        {/* Content */}
-        <div className="flex-1 px-6 pt-20 flex flex-col">
-          {/* Bell icon */}
-          <motion.div
-            initial={{ scale: 0, rotate: -20 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-            className="mb-8"
-          >
-            <span className="text-6xl">🔔</span>
-          </motion.div>
+        {/* Content - left-aligned layout */}
+        <div className="flex-1 flex flex-col items-start px-[20px] pt-[48px]">
+          {/* Bell illustration - 80x80px, left aligned */}
+          <div className="w-[80px] h-[80px] flex items-center justify-start mb-[32px] shrink-0">
+            <img
+              src="/icons/onboarding/notification illustration.png"
+              alt="Notifications"
+              width={80}
+              height={80}
+              className="w-[80px] h-[80px] object-contain"
+            />
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.2 }}
-          >
-            <h1 className="text-[28px] font-bold text-black leading-tight">
-              Don't miss a beat, or a match
-            </h1>
-            <p className="text-gray-600 mt-3 text-base leading-relaxed">
-              Turn on your notifications so we can let you know when you have new matches, likes, or messages.
-            </p>
-          </motion.div>
-        </div>
+          {/* Headline */}
+          <h1 className="text-[28px] font-medium text-bumble-black leading-[34px] text-left mb-[16px] w-full">
+            Don&apos;t miss a beat, or a match
+          </h1>
 
-        {/* Bottom actions */}
-        <div className="p-6 space-y-3">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.4 }}
-          >
-            <Button
-              variant="primary"
-              size="lg"
-              fullWidth
+          {/* Body text - 16px, full width so it fits in two lines */}
+          <p className="text-[16px] text-bumble-gray leading-[22px] text-left mb-[48px] w-full">
+            Turn on your notifications so we can let you know when you have new matches, likes, or messages.
+          </p>
+
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          {/* Bottom CTAs */}
+          <div className="w-full flex flex-col items-stretch gap-[16px] pb-[40px]">
+            <button
               onClick={handleAllow}
+              className="w-full py-[14px] px-[24px] rounded-[12px] bg-bumble-black text-white text-[16px] font-medium"
             >
               Allow notifications
-            </Button>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.5 }}
-          >
+            </button>
             <button
               onClick={handleNotNow}
-              className="w-full py-3 text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors"
+              className="text-[16px] text-bumble-gray"
             >
               Not now
             </button>
-          </motion.div>
+          </div>
         </div>
       </div>
     </PhoneFrame>

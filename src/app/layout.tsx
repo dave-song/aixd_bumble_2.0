@@ -1,9 +1,16 @@
 import type { Metadata, Viewport } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-plus-jakarta",
+  weight: ["400", "500", "600", "700"],
+});
 
 export const metadata: Metadata = {
   title: "Bumble Beeline",
-  description: "AI-powered matchmaking for meaningful connections",
+  description: "AI-powered matchmaking assistant prototype",
 };
 
 export const viewport: Viewport = {
@@ -20,16 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body style={{ 
-        background: '#f0f0f0', 
-        minHeight: '100vh', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        margin: 0,
-        padding: '16px',
-        fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif'
-      }}>
+      <body className={`${plusJakarta.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>

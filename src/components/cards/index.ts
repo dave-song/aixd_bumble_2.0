@@ -1,2 +1,2 @@
-export { default as ProfileCard } from './ProfileCard';
-export { default as SwipeIndicator } from './SwipeIndicator';
+export { ProfileCard, BioSection, PhotoSection } from "./ProfileCard";
+export { SwipeButtons } from "./SwipeButtons";

@@ -1,32 +1,52 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { PhoneFrame, StatusBar } from '@/components/layout';
-import { ProgressBar, Chip } from '@/components/ui';
-import { ChevronRight, Search } from 'lucide-react';
-import { interests } from '@/lib/mockData';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { PhoneFrame, StatusBar } from "@/components/layout";
+import { Search } from "lucide-react";
+
+const MAX_SELECTIONS = 5;
+
+const interests = [
+  { id: "rnb", emoji: "🎵", label: "R&B" },
+  { id: "writing", emoji: "📝", label: "Writing" },
+  { id: "horror", emoji: "📺", label: "Horror" },
+  { id: "feminism", emoji: "💛", label: "Feminism" },
+  { id: "concerts", emoji: "🎫", label: "Concerts" },
+  { id: "art", emoji: "🐶", label: "Art" },
+  { id: "crafts", emoji: "🧵", label: "Crafts" },
+  { id: "dogs", emoji: "🐕", label: "Dogs" },
+  { id: "camping", emoji: "⛺", label: "Camping" },
+  { id: "cats", emoji: "🐱", label: "Cats" },
+  { id: "dancing", emoji: "💃", label: "Dancing" },
+  { id: "foodie", emoji: "🍜", label: "Foodie" },
+  { id: "festivals", emoji: "🎪", label: "Festivals" },
+  { id: "vegetarian", emoji: "🥗", label: "Vegetarian" },
+  { id: "lgbtq", emoji: "🏳️‍🌈", label: "LGBTQ+ rights" },
+  { id: "museums", emoji: "🏛️", label: "Museums & galleries" },
+  { id: "country", emoji: "🎵", label: "Country" },
+  { id: "gardening", emoji: "🌱", label: "Gardening" },
+];
 
 export default function InterestsPage() {
   const router = useRouter();
-  const [selectedInterests, setSelectedInterests] = useState<string[]>(['concerts', 'vegetarian']);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selected, setSelected] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const toggleInterest = (id: string) => {
-    if (selectedInterests.includes(id)) {
-      setSelectedInterests(selectedInterests.filter((i) => i !== id));
-    } else if (selectedInterests.length < 5) {
-      setSelectedInterests([...selectedInterests, id]);
+    if (selected.includes(id)) {
+      setSelected(selected.filter((s) => s !== id));
+    } else if (selected.length < MAX_SELECTIONS) {
+      setSelected([...selected, id]);
     }
   };
 
-  const handleNext = () => {
-    router.push('/onboarding/life');
+  const handleContinue = () => {
+    router.push("/onboarding/values");
   };
 
   const handleSkip = () => {
-    router.push('/onboarding/life');
+    router.push("/onboarding/values");
   };
 
   const filteredInterests = interests.filter((interest) =>
@@ -35,95 +55,99 @@ export default function InterestsPage() {
 
   return (
     <PhoneFrame>
-      <div className="h-full flex flex-col bg-white">
+      <div className="relative w-full h-full bg-white flex flex-col">
         <StatusBar />
-        
-        {/* Progress bar */}
-        <div className="px-6 pt-4">
-          <ProgressBar steps={5} currentStep={2} />
+
+        {/* Progress Bar - 4th step; tap left side to go back */}
+        <div className="relative w-full h-[10px] px-[20px] flex items-center">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="absolute left-0 top-0 bottom-0 w-1/3 min-w-[80px] z-10 cursor-pointer"
+            aria-label="Go back"
+          />
+          <div className="relative flex-1 h-[3px] bg-[#D2D2D2] rounded-full">
+            <div className="absolute left-0 top-0 h-full w-[80%] bg-black rounded-full" />
+          </div>
         </div>
 
         {/* Content */}
-        <div className="flex-1 px-6 pt-8 overflow-auto hide-scrollbar">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <h1 className="text-[28px] font-bold text-black leading-tight">
-              Choose 5 things you're really into
-            </h1>
-            <p className="text-gray-600 mt-2 text-base leading-relaxed">
-              Proud foodie or big on bouldering? Add interests to your profile to help you match with people who love them too.
-            </p>
-          </motion.div>
+        <div className="flex-1 flex flex-col px-[20px] pt-[24px] overflow-hidden">
+          {/* Title & Subtitle */}
+          <h1 className="text-[28px] font-medium text-bumble-black leading-[34px] mb-[8px]">
+            Choose 5 things you're really into
+          </h1>
+          <p className="text-[16px] text-bumble-gray leading-[22px] mb-[24px]">
+            Proud foodie or big on bouldering? Add interests to your profile to help you match with people who love them too.
+          </p>
 
-          {/* Search */}
-          <div className="mt-6 relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+          {/* Search Bar */}
+          <div className="flex items-center gap-[12px] px-[16px] py-[12px] bg-[#F5F5F5] rounded-full mb-[24px]">
+            <Search size={20} className="text-bumble-gray" />
             <input
               type="text"
-              placeholder="What are you into?"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-full bg-gray-100 text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+              placeholder="What are you into?"
+              className="flex-1 bg-transparent text-[16px] text-bumble-black placeholder:text-bumble-gray outline-none"
             />
           </div>
 
-          {/* Interests */}
-          <div className="mt-6">
-            <h2 className="text-base font-semibold text-gray-700 mb-4">
-              You might like...
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {filteredInterests.map((interest, index) => (
-                <motion.div
+          {/* You might like section */}
+          <h2 className="text-[16px] font-medium text-bumble-black mb-[16px]">
+            You might like...
+          </h2>
+
+          {/* Interest Tags - Scrollable */}
+          <div className="flex-1 overflow-y-auto scrollbar-hide pb-[100px]">
+            <div className="flex flex-wrap gap-[8px]">
+              {filteredInterests.map((interest) => (
+                <button
                   key={interest.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.2, delay: index * 0.02 }}
+                  onClick={() => toggleInterest(interest.id)}
+                  disabled={!selected.includes(interest.id) && selected.length >= MAX_SELECTIONS}
+                  className={`h-[40px] px-[16px] rounded-full flex items-center gap-[6px] transition-all ${
+                    selected.includes(interest.id)
+                      ? "bg-bumble-accent text-bumble-black"
+                      : "bg-[#F3F3F3] text-bumble-black"
+                  } ${
+                    !selected.includes(interest.id) && selected.length >= MAX_SELECTIONS
+                      ? "opacity-50"
+                      : ""
+                  }`}
                 >
-                  <Chip
-                    emoji={interest.emoji}
-                    label={interest.label}
-                    selected={selectedInterests.includes(interest.id)}
-                    onSelect={() => toggleInterest(interest.id)}
-                  />
-                </motion.div>
+                  <span>{interest.emoji}</span>
+                  <span className="text-[14px]">{interest.label}</span>
+                </button>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Bottom actions */}
-        <div className="p-6 flex items-center justify-between">
-          <button
-            onClick={handleSkip}
-            className="text-base font-semibold text-black"
-          >
-            Skip
-          </button>
-          
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">
-              {selectedInterests.length}/3 selected
-            </span>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={handleNext}
-              disabled={selectedInterests.length < 3}
-              className={`
-                w-14 h-14 rounded-full flex items-center justify-center
-                transition-colors duration-200
-                ${
-                  selectedInterests.length >= 3
-                    ? 'bg-black text-white'
-                    : 'bg-gray-200 text-gray-400'
-                }
-              `}
+        {/* Fixed Bottom */}
+        <div className="absolute bottom-0 left-0 right-0 bg-white px-[20px] pb-[24px] pt-[16px]">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={handleSkip}
+              className="text-[16px] font-medium text-bumble-black"
             >
-              <ChevronRight size={24} />
-            </motion.button>
+              Skip
+            </button>
+            <div className="flex items-center gap-[16px]">
+              <span className="text-[14px] text-bumble-gray">
+                {selected.length}/{MAX_SELECTIONS} selected
+              </span>
+              <button
+                onClick={handleContinue}
+                className={`w-[48px] h-[48px] rounded-full bg-bumble-black flex items-center justify-center transition-opacity ${
+                  selected.length === 0 ? "opacity-30" : "opacity-100"
+                }`}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M13.887 12.0005L7.20098 5.31477C6.88665 5.00043 6.72898 4.60043 6.72898 4.11477C6.72898 3.6291 6.88665 3.2291 7.20098 2.91477C7.51531 2.60043 7.91531 2.44277 8.40098 2.44277C8.88665 2.44277 9.28665 2.60043 9.60098 2.91477L17.4873 10.8005C17.6583 10.9719 17.7793 11.1576 17.8506 11.3576C17.922 11.5576 17.9576 11.7719 17.9576 12.0005C17.9576 12.2291 17.922 12.4434 17.8506 12.6434C17.7793 12.8434 17.6583 13.0291 17.4873 13.2005L9.60098 21.0861C9.28665 21.4005 8.88665 21.5576 8.40098 21.5576C7.91531 21.5576 7.51531 21.4005 7.20098 21.0861C6.88665 20.7718 6.72898 20.3718 6.72898 19.8861C6.72898 19.4005 6.88665 19.0005 7.20098 18.6861L13.887 12.0005Z" fill="white"/>
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>

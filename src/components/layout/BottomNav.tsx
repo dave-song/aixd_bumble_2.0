@@ -1,82 +1,66 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { User, Compass, Users, Heart, MessageCircle } from 'lucide-react';
+import { User, Compass, Users, Heart, MessageCircle } from "lucide-react";
 
-interface NavItem {
-  id: string;
-  label: string;
-  path: string;
-  icon: React.ElementType;
-  badge?: number;
-}
-
-const navItems: NavItem[] = [
-  { id: 'profile', label: 'Profile', path: '/profile', icon: User },
-  { id: 'discover', label: 'Discover', path: '/discover', icon: Compass },
-  { id: 'people', label: 'People', path: '/discover', icon: Users },
-  { id: 'liked', label: 'Liked You', path: '/liked', icon: Heart },
-  { id: 'chats', label: 'Chats', path: '/chats', icon: MessageCircle },
-];
+type TabId = "profile" | "discover" | "people" | "liked" | "chats";
 
 interface BottomNavProps {
-  activeTab?: string;
-  badges?: Record<string, number>;
+  activeTab?: TabId;
+  onTabChange?: (tab: TabId) => void;
 }
 
-export default function BottomNav({ activeTab = 'people', badges = {} }: BottomNavProps) {
-  const pathname = usePathname();
+const tabs: { id: TabId; label: string; icon: typeof User }[] = [
+  { id: "profile", label: "Profile", icon: User },
+  { id: "discover", label: "Discover", icon: Compass },
+  { id: "people", label: "People", icon: Users },
+  { id: "liked", label: "Liked You", icon: Heart },
+  { id: "chats", label: "Chats", icon: MessageCircle },
+];
 
-  const isActive = (item: NavItem) => {
-    if (activeTab) {
-      return item.id === activeTab;
-    }
-    return pathname === item.path;
-  };
-
+export function BottomNav({ activeTab = "people", onTabChange }: BottomNavProps) {
   return (
-    <nav className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 pb-6 pt-2">
-      <div className="flex items-center justify-around">
-        {navItems.map((item) => {
-          const active = isActive(item);
-          const Icon = item.icon;
-          const badge = badges[item.id];
+    <div className="w-full h-[83px] bg-white border-t border-neutral-100 flex items-start justify-around pt-[10px] px-[16px]">
+      {tabs.map((tab) => {
+        const Icon = tab.icon;
+        const isActive = activeTab === tab.id;
+        const isPeople = tab.id === "people";
 
-          return (
-            <Link
-              key={item.id}
-              href={item.path}
-              className="flex flex-col items-center gap-1 min-w-[60px] relative"
-            >
-              <div className="relative">
+        return (
+          <button
+            key={tab.id}
+            onClick={() => onTabChange?.(tab.id)}
+            className="flex flex-col items-center gap-[4px] min-w-[60px]"
+          >
+            <div className="relative">
+              {isPeople && isActive ? (
+                <div className="w-[24px] h-[24px] bg-bumble-black rounded-full flex items-center justify-center">
+                  <Icon
+                    size={14}
+                    className="text-white"
+                    strokeWidth={2}
+                  />
+                </div>
+              ) : (
                 <Icon
                   size={24}
-                  className={active ? 'text-black' : 'text-gray-400'}
-                  fill={active ? 'currentColor' : 'none'}
-                  strokeWidth={active ? 2.5 : 2}
+                  className={isActive ? "text-bumble-black" : "text-neutral-400"}
+                  strokeWidth={1.5}
                 />
-                {badge && badge > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                    {badge > 9 ? '9+' : badge}
-                  </span>
-                )}
-              </div>
-              <span
-                className={`text-[10px] ${
-                  active ? 'text-black font-medium' : 'text-gray-400'
-                }`}
-              >
-                {item.label}
-              </span>
-              {/* Red dot indicator for certain tabs */}
-              {item.id === 'profile' && (
-                <span className="absolute top-0 right-3 w-2 h-2 bg-red-500 rounded-full" />
               )}
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
+              {tab.id === "discover" && (
+                <div className="absolute -top-0.5 -right-0.5 w-[6px] h-[6px] bg-red-500 rounded-full" />
+              )}
+            </div>
+            <span
+              className={`text-[11px] ${
+                isActive ? "text-bumble-black font-medium" : "text-neutral-400"
+              }`}
+            >
+              {tab.label}
+            </span>
+          </button>
+        );
+      })}
+    </div>
   );
 }

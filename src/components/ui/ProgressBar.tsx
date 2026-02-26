@@ -1,21 +1,20 @@
-'use client';
+"use client";
 
 interface ProgressBarProps {
-  steps: number;
-  currentStep: number;
+  current: number;
+  total: number;
+  className?: string;
 }
 
-export default function ProgressBar({ steps, currentStep }: ProgressBarProps) {
+export function ProgressBar({ current, total, className = "" }: ProgressBarProps) {
+  const percentage = (current / total) * 100;
+
   return (
-    <div className="flex gap-2 w-full">
-      {Array.from({ length: steps }).map((_, index) => (
-        <div
-          key={index}
-          className={`h-1 flex-1 rounded-full transition-colors duration-300 ${
-            index < currentStep ? 'bg-black' : 'bg-gray-200'
-          }`}
-        />
-      ))}
+    <div className={`w-full h-[4px] bg-neutral-100 rounded-full ${className}`}>
+      <div
+        className="h-full bg-bumble-accent rounded-full transition-all duration-300"
+        style={{ width: `${percentage}%` }}
+      />
     </div>
   );
 }

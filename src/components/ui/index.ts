@@ -1,5 +1,5 @@
-export { default as BumbleLogo } from './BumbleLogo';
-export { default as Button } from './Button';
-export { default as Chip } from './Chip';
-export { default as ProgressBar } from './ProgressBar';
-export { default as Toggle } from './Toggle';
+export { Button } from "./Button";
+export { TitleSub } from "./TitleSub";
+export { Chip } from "./Chip";
+export { ProgressBar } from "./ProgressBar";
+export { BumbleLogo } from "./BumbleLogo";

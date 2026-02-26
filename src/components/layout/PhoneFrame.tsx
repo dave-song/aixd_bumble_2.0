@@ -1,22 +1,31 @@
-'use client';
+"use client";
 
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
+import { motion } from "framer-motion";
 
 interface PhoneFrameProps {
   children: ReactNode;
-  showStatusBar?: boolean;
+  className?: string;
 }
 
-export default function PhoneFrame({ children, showStatusBar = true }: PhoneFrameProps) {
+export function PhoneFrame({ children, className = "" }: PhoneFrameProps) {
   return (
-    <div className="relative w-[390px] h-[844px] bg-white rounded-[44px] shadow-phone overflow-hidden">
-      {/* Phone notch/dynamic island */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[126px] h-[37px] bg-black rounded-b-[20px] z-50" />
-      
-      {/* Content area */}
-      <div className="relative w-full h-full overflow-hidden">
+    <div 
+      className="min-h-screen flex items-center justify-center"
+      style={{ backgroundColor: "#444444" }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className={`relative bg-white overflow-hidden ${className}`}
+        style={{
+          width: "430px",
+          height: "932px",
+        }}
+      >
         {children}
-      </div>
+      </motion.div>
     </div>
   );
 }

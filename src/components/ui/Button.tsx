@@ -1,59 +1,60 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
+import { motion } from "framer-motion";
 
 interface ButtonProps {
   children: ReactNode;
-  variant?: 'primary' | 'secondary' | 'outline' | 'text';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: "primary" | "secondary" | "outline" | "ghost";
+  size?: "sm" | "md" | "lg";
   fullWidth?: boolean;
-  disabled?: boolean;
   onClick?: () => void;
-  icon?: ReactNode;
+  disabled?: boolean;
   className?: string;
 }
 
-export default function Button({
+export function Button({
   children,
-  variant = 'primary',
-  size = 'md',
+  variant = "primary",
+  size = "md",
   fullWidth = false,
-  disabled = false,
   onClick,
-  icon,
-  className = '',
+  disabled = false,
+  className = "",
 }: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-full transition-all duration-200';
-  
-  const variants = {
-    primary: 'bg-black text-white hover:bg-gray-800 active:bg-gray-900',
-    secondary: 'bg-bumble-yellow text-black hover:bg-bumble-yellow-light active:bg-yellow-500',
-    outline: 'bg-white border-2 border-gray-200 text-black hover:border-gray-300',
-    text: 'bg-transparent text-gray-600 hover:text-black',
+  const baseStyles =
+    "font-medium rounded-[12px] transition-colors duration-200 flex items-center justify-center";
+
+  const variantStyles = {
+    primary: "bg-bumble-black text-white hover:bg-neutral-800",
+    secondary: "bg-bumble-accent text-bumble-black hover:bg-yellow-400",
+    outline:
+      "bg-white text-bumble-black border-[1.5px] border-bumble-black hover:bg-neutral-50",
+    ghost: "bg-transparent text-bumble-gray hover:text-bumble-black",
   };
 
-  const sizes = {
-    sm: 'px-4 py-2 text-sm',
-    md: 'px-6 py-3 text-base',
-    lg: 'px-8 py-4 text-lg',
+  const sizeStyles = {
+    sm: "px-[12px] py-[8px] text-[14px]",
+    md: "px-[16px] py-[10px] text-[16px]",
+    lg: "px-[20px] py-[12px] text-[16px]",
   };
 
   return (
     <motion.button
-      whileTap={{ scale: disabled ? 1 : 0.98 }}
       onClick={onClick}
       disabled={disabled}
+      whileTap={{ scale: disabled ? 1 : 0.98 }}
+      whileHover={{ scale: disabled ? 1 : 1.01 }}
+      transition={{ duration: 0.1 }}
       className={`
         ${baseStyles}
-        ${variants[variant]}
-        ${sizes[size]}
-        ${fullWidth ? 'w-full' : ''}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+        ${variantStyles[variant]}
+        ${sizeStyles[size]}
+        ${fullWidth ? "w-full" : ""}
+        ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
         ${className}
       `}
     >
-      {icon && <span className="mr-2">{icon}</span>}
       {children}
     </motion.button>
   );

@@ -1,135 +1,186 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
-import { Upload, Briefcase, GraduationCap, CheckCircle, MessageCircle } from 'lucide-react';
-import type { Profile } from '@/lib/mockData';
+import { ReactNode } from "react";
+import { CheckCircle, Briefcase, GraduationCap, MapPin } from "lucide-react";
 
 interface ProfileCardProps {
-  profile: Profile;
-  onSwipeLeft?: () => void;
-  onSwipeRight?: () => void;
-  isTop?: boolean;
+  name: string;
+  age: number;
+  job?: string;
+  school?: string;
+  location?: string;
+  verified?: boolean;
+  imageUrl: string;
+  children?: ReactNode;
+  className?: string;
 }
 
-export default function ProfileCard({
-  profile,
-  onSwipeLeft,
-  onSwipeRight,
-  isTop = true,
+export function ProfileCard({
+  name,
+  age,
+  job,
+  school,
+  location,
+  verified = false,
+  imageUrl,
+  children,
+  className = "",
 }: ProfileCardProps) {
-  const [exitDirection, setExitDirection] = useState<'left' | 'right' | null>(null);
-  
-  const x = useMotionValue(0);
-  const rotate = useTransform(x, [-200, 0, 200], [-15, 0, 15]);
-  const likeOpacity = useTransform(x, [0, 100], [0, 1]);
-  const nopeOpacity = useTransform(x, [-100, 0], [1, 0]);
-
-  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    const threshold = 100;
-    
-    if (info.offset.x > threshold) {
-      setExitDirection('right');
-      onSwipeRight?.();
-    } else if (info.offset.x < -threshold) {
-      setExitDirection('left');
-      onSwipeLeft?.();
-    }
-  };
-
   return (
-    <motion.div
-      className="absolute inset-4 bottom-24 rounded-card overflow-hidden shadow-card cursor-grab active:cursor-grabbing"
-      style={{ x, rotate }}
-      drag={isTop ? 'x' : false}
-      dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.7}
-      onDragEnd={handleDragEnd}
-      animate={
-        exitDirection
-          ? { x: exitDirection === 'right' ? 500 : -500, opacity: 0 }
-          : { x: 0 }
-      }
-      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+    <div
+      className={`relative w-[391px] rounded-[16px] overflow-hidden shadow-card ${className}`}
     >
-      {/* Profile image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${profile.photos[0]})` }}
+      {/* Main Image */}
+      <div className="relative w-full h-[522px]">
+        <img
+          src={imageUrl}
+          alt={name}
+          className="w-full h-full object-cover"
+        />
+
+        {/* Upload button */}
+        <button className="absolute top-[16px] right-[16px] w-[32px] h-[32px] bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            strokeWidth="2"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+        </button>
+
+        {/* Gradient overlay */}
+        <div className="absolute bottom-0 left-0 right-0 h-[200px] bg-gradient-to-t from-black/70 to-transparent" />
+
+        {/* Profile Info */}
+        <div className="absolute bottom-[16px] left-[16px] right-[16px]">
+          {/* Verified Badge */}
+          {verified && (
+            <div className="flex items-center gap-[6px] mb-[8px]">
+              <div className="bg-white/20 backdrop-blur-sm rounded-full px-[10px] py-[4px] flex items-center gap-[4px]">
+                <CheckCircle size={14} className="text-white" />
+                <span className="text-[12px] text-white font-medium">
+                  Photo verified
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Name & Age */}
+          <h2 className="text-[28px] font-medium text-white mb-[8px]">
+            {name}, {age}
+          </h2>
+
+          {/* Job */}
+          {job && (
+            <div className="flex items-center gap-[8px] mb-[4px]">
+              <Briefcase size={16} className="text-white/80" />
+              <span className="text-[14px] text-white/90">{job}</span>
+            </div>
+          )}
+
+          {/* School */}
+          {school && (
+            <div className="flex items-center gap-[8px]">
+              <GraduationCap size={16} className="text-white/80" />
+              <span className="text-[14px] text-white/90">{school}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Additional Content (Bio sections, etc.) */}
+      {children}
+    </div>
+  );
+}
+
+interface BioSectionProps {
+  title: string;
+  children: ReactNode;
+  onBeelineClick?: () => void;
+  className?: string;
+}
+
+export function BioSection({
+  title,
+  children,
+  onBeelineClick,
+  className = "",
+}: BioSectionProps) {
+  return (
+    <div
+      className={`bg-white p-[16px] rounded-[16px] shadow-card ${className}`}
+    >
+      <div className="flex items-center justify-between mb-[16px]">
+        <p className="font-medium text-[16px] text-bumble-black tracking-[-0.5px]">
+          {title}
+        </p>
+        {onBeelineClick && (
+          <button
+            onClick={onBeelineClick}
+            className="bg-bumble-black rounded-[10px] px-[8px] py-[7px] flex items-center justify-center"
+          >
+            <BeelineIcon />
+          </button>
+        )}
+      </div>
+      <div className="text-[16px] text-bumble-black tracking-[-0.5px]">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function BeelineIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M8 2L10 6L14 7L11 10L12 14L8 12L4 14L5 10L2 7L6 6L8 2Z"
+        fill="#FFD93A"
       />
+    </svg>
+  );
+}
 
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+interface PhotoSectionProps {
+  imageUrl: string;
+  caption?: string;
+  className?: string;
+}
 
-      {/* Like indicator */}
-      <motion.div
-        className="absolute top-8 right-8 w-20 h-20 rounded-full bg-white/90 flex items-center justify-center"
-        style={{ opacity: likeOpacity }}
-      >
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3">
-          <polyline points="20,6 9,17 4,12" />
-        </svg>
-      </motion.div>
-
-      {/* Nope indicator */}
-      <motion.div
-        className="absolute top-8 left-8 w-20 h-20 rounded-full bg-white/90 flex items-center justify-center"
-        style={{ opacity: nopeOpacity }}
-      >
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="3">
-          <line x1="18" y1="6" x2="6" y2="18" />
-          <line x1="6" y1="6" x2="18" y2="18" />
-        </svg>
-      </motion.div>
-
-      {/* Upload button */}
-      <button className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center">
-        <Upload size={18} className="text-white" />
-      </button>
-
-      {/* Profile info */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-        {/* Verified badge */}
-        {profile.verified && (
-          <div className="flex items-center gap-1.5 mb-2">
-            <CheckCircle size={16} className="text-white" fill="currentColor" />
-            <span className="text-xs font-medium">Photo verified</span>
-          </div>
-        )}
-
-        {/* Name and age */}
-        <h2 className="text-2xl font-bold">
-          {profile.name}, {profile.age}
-        </h2>
-
-        {/* Occupation */}
-        {profile.occupation && (
-          <div className="flex items-center gap-2 mt-2">
-            <Briefcase size={16} className="text-white/80" />
-            <span className="text-sm text-white/90">{profile.occupation}</span>
-          </div>
-        )}
-
-        {/* School */}
-        {profile.school && (
-          <div className="flex items-center gap-2 mt-1">
-            <GraduationCap size={16} className="text-white/80" />
-            <span className="text-sm text-white/90">{profile.school}</span>
+export function PhotoSection({
+  imageUrl,
+  caption,
+  className = "",
+}: PhotoSectionProps) {
+  return (
+    <div className={`rounded-[16px] overflow-hidden ${className}`}>
+      <div className="relative w-full h-[522px]">
+        <img
+          src={imageUrl}
+          alt="Profile photo"
+          className="w-full h-full object-cover"
+        />
+        {caption && (
+          <div className="absolute bottom-[16px] left-[16px] right-[16px]">
+            <p className="text-[14px] text-white font-medium text-shadow">
+              {caption}
+            </p>
           </div>
         )}
       </div>
-
-      {/* Message button */}
-      <button className="absolute bottom-4 left-4 w-12 h-12 rounded-full bg-bumble-yellow flex items-center justify-center shadow-lg">
-        <MessageCircle size={22} className="text-black" fill="currentColor" />
-      </button>
-
-      {/* SuperSwipe button */}
-      <button className="absolute bottom-4 right-4 w-14 h-14 rounded-full bg-bumble-yellow flex items-center justify-center shadow-lg">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="black">
-          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-        </svg>
-      </button>
-    </motion.div>
+    </div>
   );
 }

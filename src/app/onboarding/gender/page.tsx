@@ -1,134 +1,119 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { PhoneFrame, StatusBar } from '@/components/layout';
-import { ProgressBar } from '@/components/ui';
-import { ChevronRight } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { PhoneFrame, StatusBar } from "@/components/layout";
+import { Info } from "lucide-react";
 
 const genderOptions = [
-  { id: 'woman', label: 'Woman' },
-  { id: 'man', label: 'Man' },
-  { id: 'nonbinary', label: 'Nonbinary' },
+  { id: "woman", label: "Woman" },
+  { id: "man", label: "Man" },
+  { id: "nonbinary", label: "Nonbinary" },
 ];
 
-export default function GenderSelectionPage() {
+export default function GenderPage() {
   const router = useRouter();
-  const [selectedGender, setSelectedGender] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [userName, setUserName] = useState("Alex");
 
-  const handleNext = () => {
-    if (selectedGender) {
-      router.push('/onboarding/interests');
+  useEffect(() => {
+    const storedName = localStorage.getItem("userName");
+    if (storedName) {
+      setUserName(storedName);
+    }
+  }, []);
+
+  const handleContinue = () => {
+    if (selected) {
+      router.push("/onboarding/life");
     }
   };
 
   return (
     <PhoneFrame>
-      <div className="h-full flex flex-col bg-white">
+      <div className="relative w-full h-full bg-white flex flex-col">
         <StatusBar />
-        
-        {/* Progress bar */}
-        <div className="px-6 pt-4">
-          <ProgressBar steps={5} currentStep={1} />
+
+        {/* Progress Bar - tap left side to go back */}
+        <div className="relative w-full">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="absolute left-0 top-0 bottom-0 w-1/3 min-w-[80px] z-10 cursor-pointer h-[10px]"
+            aria-label="Go back"
+          />
+          <img 
+            src="/icons/onboarding/onboarding progress bar.svg" 
+            alt="Progress" 
+            className="w-full"
+          />
         </div>
 
         {/* Content */}
-        <div className="flex-1 px-6 pt-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <h1 className="text-[28px] font-bold text-black leading-tight">
-              Alex is a great name
-            </h1>
-            <p className="text-gray-600 mt-2 text-base leading-relaxed">
-              We love that you're here. Pick the gender that best describes you, then add more about it if you like.
-            </p>
-          </motion.div>
+        <div className="flex-1 flex flex-col px-[20px] pt-[24px]">
+          {/* Title & Subtitle */}
+          <h1 className="text-[28px] font-medium text-bumble-black leading-[34px] mb-[12px]">
+            {userName} is a great name
+          </h1>
+          <p className="text-[16px] text-bumble-gray leading-[22px] mb-[32px]">
+            We love that you're here. Pick the gender that best describes you, then add more about it if you like.
+          </p>
 
-          {/* Gender question */}
-          <div className="mt-8">
-            <h2 className="text-lg font-semibold text-black mb-4">
-              Which gender best describes you?
-            </h2>
+          {/* Section Header */}
+          <h2 className="text-[16px] font-medium text-bumble-black mb-[16px]">
+            Which gender best describes you?
+          </h2>
 
-            <div className="space-y-3">
-              {genderOptions.map((option, index) => (
-                <motion.button
-                  key={option.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  onClick={() => setSelectedGender(option.id)}
-                  className={`
-                    w-full flex items-center justify-between p-4 rounded-xl
-                    border-2 transition-all duration-200
-                    ${
-                      selectedGender === option.id
-                        ? 'border-black bg-gray-50'
-                        : 'border-gray-200 bg-white hover:border-gray-300'
-                    }
-                  `}
+          {/* Gender Options */}
+          <div className="flex flex-col gap-[12px]">
+            {genderOptions.map((option) => (
+              <button
+                key={option.id}
+                onClick={() => setSelected(option.id)}
+                className="w-full py-[16px] px-[20px] rounded-[12px] flex items-center justify-between bg-[#F5F5F5] transition-all duration-200"
+              >
+                <span className="text-[16px] text-bumble-black">
+                  {option.label}
+                </span>
+                <div
+                  className={`w-[24px] h-[24px] rounded-full border-2 flex items-center justify-center transition-all ${
+                    selected === option.id
+                      ? "border-bumble-black bg-bumble-black"
+                      : "border-neutral-300 bg-white"
+                  }`}
                 >
-                  <span className="text-base font-medium text-black">
-                    {option.label}
-                  </span>
-                  <div
-                    className={`
-                      w-6 h-6 rounded-full border-2 flex items-center justify-center
-                      transition-colors duration-200
-                      ${
-                        selectedGender === option.id
-                          ? 'border-black bg-black'
-                          : 'border-gray-300'
-                      }
-                    `}
-                  >
-                    {selectedGender === option.id && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="w-2 h-2 rounded-full bg-white"
-                      />
-                    )}
-                  </div>
-                </motion.button>
-              ))}
-            </div>
+                  {selected === option.id && (
+                    <div className="w-[8px] h-[8px] rounded-full bg-white" />
+                  )}
+                </div>
+              </button>
+            ))}
           </div>
 
-          {/* Note */}
-          <p className="mt-6 text-sm text-gray-500">
-            <span className="inline-flex items-center gap-1">
-              <span className="w-4 h-4 rounded-full border border-gray-400 inline-flex items-center justify-center text-[10px]">i</span>
-            </span>
-            {' '}You can always update this later.{' '}
-            <a href="#" className="underline text-gray-700">
-              A note about gender on Bumble.
-            </a>
-          </p>
-        </div>
+          {/* Info Text - directly below options */}
+          <div className="flex items-start gap-[8px] mt-[24px]">
+            <Info size={18} className="text-bumble-gray mt-[2px] shrink-0" />
+            <p className="text-[14px] text-bumble-gray leading-[20px]">
+              You can always update this later.{" "}
+              <span className="underline">A note about gender on Bumble.</span>
+            </p>
+          </div>
 
-        {/* Next button */}
-        <div className="p-6">
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={handleNext}
-            disabled={!selectedGender}
-            className={`
-              w-14 h-14 rounded-full flex items-center justify-center ml-auto
-              transition-colors duration-200
-              ${
-                selectedGender
-                  ? 'bg-black text-white'
-                  : 'bg-gray-200 text-gray-400'
-              }
-            `}
-          >
-            <ChevronRight size={24} />
-          </motion.button>
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          {/* Next Button */}
+          <div className="flex justify-end pb-[24px]">
+            <button
+              onClick={handleContinue}
+              disabled={!selected}
+              className={`w-[48px] h-[48px] rounded-full bg-bumble-black flex items-center justify-center transition-opacity ${!selected ? "opacity-30" : "opacity-100"}`}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.887 12.0005L7.20098 5.31477C6.88665 5.00043 6.72898 4.60043 6.72898 4.11477C6.72898 3.6291 6.88665 3.2291 7.20098 2.91477C7.51531 2.60043 7.91531 2.44277 8.40098 2.44277C8.88665 2.44277 9.28665 2.60043 9.60098 2.91477L17.4873 10.8005C17.6583 10.9719 17.7793 11.1576 17.8506 11.3576C17.922 11.5576 17.9576 11.7719 17.9576 12.0005C17.9576 12.2291 17.922 12.4434 17.8506 12.6434C17.7793 12.8434 17.6583 13.0291 17.4873 13.2005L9.60098 21.0861C9.28665 21.4005 8.88665 21.5576 8.40098 21.5576C7.91531 21.5576 7.51531 21.4005 7.20098 21.0861C6.88665 20.7718 6.72898 20.3718 6.72898 19.8861C6.72898 19.4005 6.88665 19.0005 7.20098 18.6861L13.887 12.0005Z" fill="white"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </PhoneFrame>
