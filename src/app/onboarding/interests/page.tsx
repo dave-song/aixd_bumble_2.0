@@ -13,7 +13,7 @@ const interests = [
   { id: "horror", emoji: "📺", label: "Horror" },
   { id: "feminism", emoji: "💛", label: "Feminism" },
   { id: "concerts", emoji: "🎫", label: "Concerts" },
-  { id: "art", emoji: "🐶", label: "Art" },
+  { id: "art", emoji: "🎨", label: "Art" },
   { id: "crafts", emoji: "🧵", label: "Crafts" },
   { id: "dogs", emoji: "🐕", label: "Dogs" },
   { id: "camping", emoji: "⛺", label: "Camping" },
@@ -82,7 +82,7 @@ export default function InterestsPage() {
           </p>
 
           {/* Search Bar */}
-          <div className="flex items-center gap-[12px] px-[16px] py-[12px] bg-[#F5F5F5] rounded-full mb-[24px]">
+          <div className="flex items-center gap-[12px] px-[16px] py-[12px] bg-[#F5F5F5] rounded-[0.5rem] mb-[24px]">
             <Search size={20} className="text-bumble-gray" />
             <input
               type="text"
@@ -100,7 +100,7 @@ export default function InterestsPage() {
 
           {/* Interest Tags - Scrollable */}
           <div className="flex-1 overflow-y-auto scrollbar-hide pb-[100px]">
-            <div className="flex flex-wrap gap-[8px]">
+            <div className="flex flex-wrap gap-[6px]">
               {filteredInterests.map((interest) => (
                 <button
                   key={interest.id}

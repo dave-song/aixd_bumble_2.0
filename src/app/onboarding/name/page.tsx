@@ -8,10 +8,16 @@ export default function NamePage() {
   const router = useRouter();
   const [name, setName] = useState("");
 
+  /** Capitalize first letter, lowercase the rest (e.g. DAVE → Dave, dave → Dave) */
+  function formatName(value: string): string {
+    const trimmed = value.trim();
+    if (!trimmed) return trimmed;
+    return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+  }
+
   const handleContinue = () => {
     if (name.trim()) {
-      // Store name in localStorage for use in next page
-      localStorage.setItem("userName", name.trim());
+      localStorage.setItem("userName", formatName(name));
       router.push("/onboarding/gender");
     }
   };
