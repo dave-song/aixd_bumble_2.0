@@ -21,6 +21,7 @@ npm run dev
 ## Current Progress
 
 **As of February 25, 2026:**
+
 - ✅ Set up the Figma to Cursor MCP pipeline
 - ✅ Implemented interactive mobile web prototype with 32 screens
 - ✅ Built onboarding flow (gender, interests, life, values, notifications)
@@ -106,17 +107,20 @@ Research shows a significant negative correlation between Adoption Rate and Conv
 ## Business Context
 
 ### Goals
+
 - Increase overall platform active user base
 - Improve conversion rate of non-paying users to paying customers
 - Establish Bumble as a platform with market-leading user experience
 
 ### Target Users
+
 - Existing, non-paying users who opt in for location/data services
 - 90% are under 35
 - Active enough to receive matches regularly
 - Not currently paying for Premium or Premium+
 
 ### Competitors
+
 - **Traditional**: Tinder, Hinge, OkCupid, eHarmony, Badoo, Raya
 - **Non-traditional**: Instagram, Snapchat, Meetup, LinkedIn
 
@@ -125,6 +129,7 @@ Research shows a significant negative correlation between Adoption Rate and Conv
 ## Documentation
 
 Additional project documentation can be found in the `/documents` folder:
+
 - `Advanced IXD P2.1 Design Brief (1).pdf` - Detailed design brief and project analysis
 - `A-IXD Project 2 Concept Pitch.pdf` - Concept pitch presentation
 

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronUp, ChevronDown, Phone, Mic } from "lucide-react";
 
 export type BeelineState =
   | "collapsed"
@@ -44,30 +43,51 @@ export default function BeelineOverlay({
   return (
     <motion.div
       layout
-      className="absolute top-0 left-0 right-0 z-20 mx-4 mt-4"
+      className="absolute top-[114px] left-[10px] right-[10px] z-30"
       initial={false}
     >
       <motion.div
         layout
-        className="bg-beeline-yellow rounded-2xl overflow-hidden shadow-lg"
+        className="bg-[#ffe792] rounded-[18px] overflow-hidden"
+        style={{ boxShadow: "0 0 12px rgba(0, 0, 0, 0.25)" }}
       >
-        {/* Header - Always visible */}
+        {/* Header */}
         <motion.button
           layout
           onClick={toggleExpand}
-          className="w-full flex items-center justify-between p-4"
+          className="w-full flex items-center justify-between p-[16px]"
         >
-          <div className="flex items-center gap-2">
-            <span className="bg-bumble-yellow text-black text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
-              Beeline
-              <span className="text-yellow-600">✦</span>
-            </span>
+          <div className="relative h-[27px]">
+            {/* Beeline badge background */}
+            <img
+              src="/icons/beeline-badge.svg"
+              alt=""
+              className="h-[27px] w-[95px]"
+            />
+            {/* Beeline text overlay */}
+            <div className="absolute inset-0 flex items-center gap-[4px] pl-[8px]">
+              <span
+                className="text-[16px] italic font-semibold text-[#ffdb5b]"
+                style={{ fontFamily: "'Euclid Circular A', sans-serif" }}
+              >
+                Beeline
+              </span>
+              <img
+                src="/icons/beeline-sparkle.svg"
+                alt=""
+                className="w-[20px] h-[20px]"
+              />
+            </div>
           </div>
-          {isExpanded ? (
-            <ChevronUp size={20} className="text-gray-600" />
-          ) : (
-            <ChevronDown size={20} className="text-gray-600" />
-          )}
+          <div
+            className={`transition-transform duration-200 ${isExpanded ? "-rotate-90" : "rotate-90"}`}
+          >
+            <img
+              src="/icons/chevron-down.svg"
+              alt=""
+              className="w-[24px] h-[24px]"
+            />
+          </div>
         </motion.button>
 
         {/* Expanded content */}
@@ -82,29 +102,39 @@ export default function BeelineOverlay({
             >
               {/* Question state */}
               {(state === "question" || state === "collapsed") && (
-                <div className="px-4 pb-4">
-                  <p className="text-sm text-gray-800 leading-relaxed mb-4">
+                <div className="px-[16px] pb-[16px] flex flex-col gap-[8px]">
+                  <p
+                    className="text-[16px] text-[#202020] leading-normal tracking-[-0.5px]"
+                    style={{ fontFamily: "'Euclid Circular A', sans-serif" }}
+                  >
                     {question}
                   </p>
-                  <div className="flex gap-2">
+                  <div className="flex gap-[8px] items-center">
                     <button
                       onClick={() => handleAnswer("yes")}
-                      className="flex-1 py-2.5 px-4 bg-white border border-gray-200 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors"
+                      className="w-[90px] bg-white rounded-[10px] px-[8px] py-[7px] text-[16px] text-[#202020] tracking-[-0.5px]"
+                      style={{ fontFamily: "'Euclid Circular A', sans-serif" }}
                     >
                       Yes
                     </button>
                     <button
                       onClick={() => handleAnswer("no")}
-                      className="flex-1 py-2.5 px-4 bg-black text-white rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
+                      className="w-[90px] bg-[#474747] rounded-[10px] px-[8px] py-[7px] text-[16px] text-white tracking-[-0.5px]"
+                      style={{ fontFamily: "'Euclid Circular A', sans-serif" }}
                     >
                       No
                     </button>
                     <button
                       onClick={() => handleAnswer("spill")}
-                      className="flex-1 py-2.5 px-4 bg-white border border-gray-200 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-1"
+                      className="flex-1 bg-[#202020] rounded-[10px] px-[8px] py-[7px] text-[16px] text-white tracking-[-0.5px] flex items-center justify-center gap-[8px]"
+                      style={{ fontFamily: "'Euclid Circular A', sans-serif" }}
                     >
-                      <Phone size={14} />
-                      Actually, let's spill...
+                      <img
+                        src="/icons/phone-icon.svg"
+                        alt=""
+                        className="w-[20px] h-[20px]"
+                      />
+                      <span>Actually, let's spill...</span>
                     </button>
                   </div>
                 </div>
@@ -112,20 +142,22 @@ export default function BeelineOverlay({
 
               {/* Voice input state */}
               {state === "voice" && (
-                <div className="px-4 pb-4">
-                  <p className="text-sm text-gray-800 leading-relaxed mb-4">
+                <div className="px-[16px] pb-[16px] flex flex-col gap-[8px]">
+                  <p
+                    className="text-[16px] text-[#202020] leading-normal tracking-[-0.5px]"
+                    style={{ fontFamily: "'Euclid Circular A', sans-serif" }}
+                  >
                     {question}
                   </p>
-                  <div className="flex gap-2">
-                    <button className="flex-1 py-2.5 px-4 bg-white border border-gray-200 rounded-full text-sm font-medium">
+                  <div className="flex gap-[8px] items-center">
+                    <button className="w-[90px] bg-white rounded-[10px] px-[8px] py-[7px] text-[16px] text-[#202020] tracking-[-0.5px]">
                       Yes
                     </button>
-                    <button className="flex-1 py-2.5 px-4 bg-black text-white rounded-full text-sm font-medium">
+                    <button className="w-[90px] bg-[#474747] rounded-[10px] px-[8px] py-[7px] text-[16px] text-white tracking-[-0.5px]">
                       No
                     </button>
-                    <div className="flex-1 py-2.5 px-4 bg-black text-white rounded-full text-sm font-medium flex items-center justify-center gap-2">
+                    <div className="flex-1 bg-[#202020] rounded-[10px] px-[8px] py-[7px] flex items-center justify-center gap-[8px]">
                       <VoiceWaveform />
-                      <Mic size={14} />
                     </div>
                   </div>
                 </div>
@@ -133,8 +165,8 @@ export default function BeelineOverlay({
 
               {/* Typing state */}
               {state === "typing" && (
-                <div className="px-4 pb-4">
-                  <p className="text-sm text-gray-800">
+                <div className="px-[16px] pb-[16px]">
+                  <p className="text-[16px] text-[#202020]">
                     Last<span className="animate-pulse">...</span>
                   </p>
                 </div>
@@ -142,26 +174,22 @@ export default function BeelineOverlay({
 
               {/* Done state */}
               {state === "done" && (
-                <div className="px-4 pb-4">
-                  <p className="text-sm text-gray-800 leading-relaxed mb-4">
+                <div className="px-[16px] pb-[16px] flex flex-col gap-[8px]">
+                  <p
+                    className="text-[16px] text-[#202020] leading-normal tracking-[-0.5px]"
+                    style={{ fontFamily: "'Euclid Circular A', sans-serif" }}
+                  >
                     {question}
                   </p>
-                  <div className="flex gap-2">
-                    <button className="flex-1 py-2.5 px-4 bg-white border border-gray-200 rounded-full text-sm font-medium">
+                  <div className="flex gap-[8px] items-center">
+                    <button className="w-[90px] bg-white rounded-[10px] px-[8px] py-[7px] text-[16px] text-[#202020] tracking-[-0.5px] border border-[#ffd93a]">
                       Yes
                     </button>
-                    <button className="flex-1 py-2.5 px-4 bg-black text-white rounded-full text-sm font-medium">
+                    <button className="w-[90px] bg-[#474747] rounded-[10px] px-[8px] py-[7px] text-[16px] text-white tracking-[-0.5px]">
                       No
                     </button>
-                    <button className="flex-1 py-2.5 px-4 bg-bumble-yellow rounded-full text-sm font-medium flex items-center justify-center gap-1">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
+                    <button className="flex-1 bg-[#ffd93a] rounded-[10px] px-[8px] py-[7px] text-[16px] text-[#202020] tracking-[-0.5px] flex items-center justify-center gap-[8px]">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <polyline points="20,6 9,17 4,12" />
                       </svg>
                       Done!
@@ -177,16 +205,15 @@ export default function BeelineOverlay({
   );
 }
 
-// Voice waveform animation component
 function VoiceWaveform() {
   return (
-    <div className="flex items-center gap-0.5 h-4">
+    <div className="flex items-center gap-[2px] h-[20px]">
       {[...Array(8)].map((_, i) => (
         <motion.div
           key={i}
-          className="w-0.5 bg-white rounded-full"
+          className="w-[3px] bg-white rounded-full"
           animate={{
-            height: [4, 12, 4],
+            height: [6, 16, 6],
           }}
           transition={{
             duration: 0.5,

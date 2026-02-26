@@ -2,8 +2,8 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { PhoneFrame, StatusBar, BottomNav } from "@/components/layout";
+import { AnimatePresence } from "framer-motion";
+import { PhoneFrame, StatusBar, BottomNav, Header } from "@/components/layout";
 import { ProfileCard } from "@/components/cards";
 import {
   BeelineOverlay,
@@ -56,67 +56,36 @@ export default function DiscoverPage() {
     router.push("/profile");
   };
 
+  const handleBeelineClick = () => {
+    setShowBeeline(!showBeeline);
+  };
+
   return (
     <PhoneFrame>
       <div className="h-full bg-white relative">
-        {/* Status bar wrapper */}
+        {/* Status bar */}
         <div className="absolute top-0 left-0 right-0 z-20">
           <StatusBar />
         </div>
 
-        {/* Header - matches Figma Bumble top main section */}
-        <div className="absolute top-[54px] left-0 right-0 flex items-center justify-between px-[10px] h-[42px] bg-white z-10">
-          <h1 className="text-[28px] font-bold text-black tracking-[-0.02em]" style={{ fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>Bumble</h1>
-          <div className="flex items-center gap-[15px]">
-            {/* Beeline icon with notification - star with center dot */}
-            <button
-              onClick={() => setShowBeeline(!showBeeline)}
-              className="relative w-[32px] h-[32px] flex items-center justify-center"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M12 2L14.09 8.26L21 9.27L16 14.14L17.18 21.02L12 17.77L6.82 21.02L8 14.14L3 9.27L9.91 8.26L12 2Z"
-                  fill="#1A1A1A"
-                  stroke="#1A1A1A"
-                  strokeWidth="0.5"
-                />
-                <circle cx="12" cy="12.5" r="2.5" fill="white"/>
-              </svg>
-              {hasNotification && (
-                <span className="absolute top-0 right-0 w-[10px] h-[10px] bg-[#FF4458] rounded-full border-2 border-white" />
-              )}
-            </button>
-            {/* Filter button - sliders icon */}
-            <button className="w-[32px] h-[32px] flex items-center justify-center">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <line x1="4" y1="6" x2="20" y2="6" stroke="#1A1A1A" strokeWidth="1.5"/>
-                <line x1="4" y1="12" x2="20" y2="12" stroke="#1A1A1A" strokeWidth="1.5"/>
-                <line x1="4" y1="18" x2="20" y2="18" stroke="#1A1A1A" strokeWidth="1.5"/>
-                <circle cx="8" cy="6" r="2" fill="white" stroke="#1A1A1A" strokeWidth="1.5"/>
-                <circle cx="16" cy="12" r="2" fill="white" stroke="#1A1A1A" strokeWidth="1.5"/>
-                <circle cx="10" cy="18" r="2" fill="white" stroke="#1A1A1A" strokeWidth="1.5"/>
-              </svg>
-            </button>
-          </div>
+        {/* Header */}
+        <div className="absolute top-[54px] left-0 right-0 bg-white z-10">
+          <Header
+            notif={hasNotification ? "yes" : "no"}
+            onBeelineClick={handleBeelineClick}
+          />
         </div>
 
-        {/* Profile cards area - full height container for absolute positioning */}
+        {/* Profile cards area */}
         <div className="absolute inset-0">
           {/* Beeline banner */}
           <AnimatePresence>
             {showBeelineBanner && (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="absolute top-[100px] left-[10px] right-[10px] z-30"
-              >
-                <BeelineBanner
-                  title="Your Beeline profile is now ready."
-                  subtitle="Everything I've learned while you were yapping."
-                  onClick={handleBannerClick}
-                />
-              </motion.div>
+              <BeelineBanner
+                title="Your Beeline profile is now ready."
+                subtitle="Everything I've learned while you were yapping."
+                onClick={handleBannerClick}
+              />
             )}
           </AnimatePresence>
 
@@ -163,7 +132,7 @@ export default function DiscoverPage() {
         {/* Bottom navigation */}
         <BottomNav
           activeTab="people"
-          badges={{ profile: hasNotification ? 1 : 0 }}
+          showProfileBadge={hasNotification}
         />
       </div>
     </PhoneFrame>

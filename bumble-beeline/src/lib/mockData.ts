@@ -59,7 +59,7 @@ export const profiles: Profile[] = [
     occupation: 'Project Manager at Tech',
     school: 'Carnegie Mellon',
     photos: [
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&h=1200&fit=crop',
+      '/images/hari-profile.png',
     ],
     openingMove: "What's your ideal first date?",
   },

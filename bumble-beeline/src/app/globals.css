@@ -1,22 +1,46 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bumble-yellow: #ffc629;
-  --color-bumble-yellow-light: #ffe082;
+  --color-bumble-yellow: #ffd93a;
+  --color-bumble-yellow-light: #ffdb5b;
   --color-beeline-yellow: #fff4d4;
   --color-beeline-yellow-dark: #ffe082;
   --color-coral-start: #ff6b6b;
   --color-coral-end: #ff8e53;
-  --color-text-primary: #1a1a1a;
-  --color-text-secondary: #6b6b6b;
+  --color-text-primary: #202020;
+  --color-text-secondary: #575656;
 
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --shadow-card: 0 0 12px rgba(0, 0, 0, 0.25);
   --shadow-phone: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 
   --radius-phone: 44px;
-  --radius-card: 16px;
+  --radius-card: 18px;
   
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Euclid Circular A", system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+@font-face {
+  font-family: "Euclid Circular A";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Euclid Circular A"), local("EuclidCircularA-Regular");
+}
+
+@font-face {
+  font-family: "Euclid Circular A";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local("Euclid Circular A Medium"), local("EuclidCircularA-Medium");
+}
+
+@font-face {
+  font-family: "Euclid Circular A";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local("Euclid Circular A Semibold"), local("EuclidCircularA-Semibold");
 }
 
 * {
