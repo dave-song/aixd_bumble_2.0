@@ -1,1 +1,5 @@
-export { ProfileSectionText, ProfileSectionTags } from "./ProfileSection";
+export {
+  ProfileSectionLocation,
+  ProfileSectionTags,
+  ProfileSectionText,
+} from "./ProfileSection";

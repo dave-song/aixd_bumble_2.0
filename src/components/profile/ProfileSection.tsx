@@ -1,17 +1,30 @@
 "use client";
 
-import { Pencil, MessageCircle } from "lucide-react";
+import { MapPin } from "lucide-react";
+import Image from "next/image";
+
+const cardClassName =
+  "flex w-full max-w-[24.4375rem] flex-col items-start rounded-[1rem] bg-[#FFF] p-4 shadow-[0_0_12px_0_rgba(0,0,0,0.12)]";
+
+const tagClassName =
+  "flex h-[2.875rem] items-center gap-[0.375rem] rounded-[3rem] bg-[#F3F3F3] px-3 py-3 text-[14px] text-bumble-black";
 
 function SectionHeader({ title }: { title: string }) {
   return (
-    <div className="flex items-center justify-between gap-2 mb-3">
+    <div className="flex w-full items-center justify-between gap-2">
       <h3 className="text-[16px] font-semibold text-bumble-black">{title}</h3>
       <button
         type="button"
-        className="w-9 h-9 rounded-lg bg-bumble-black flex items-center justify-center shrink-0"
-        aria-label={`Edit ${title}`}
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg overflow-hidden bg-bumble-black"
+        aria-label="Beeline"
       >
-        <Pencil className="w-4 h-4 text-white" strokeWidth={2} />
+        <Image
+          src="/icons/user_profile_assets/beeline_btn.svg"
+          alt=""
+          width={32}
+          height={30}
+          className="h-[30px] w-[32px] object-contain"
+        />
       </button>
     </div>
   );
@@ -27,19 +40,28 @@ export function ProfileSectionText({
   showCompliment?: boolean;
 }) {
   return (
-    <section className="bg-white px-4 py-4">
-      <SectionHeader title={title} />
-      <p className="text-[14px] text-bumble-black leading-relaxed mb-3">
-        {body}
-      </p>
+    <section className={cardClassName}>
+      <div className="flex w-full flex-col gap-4">
+        <SectionHeader title={title} />
+        <p className="text-[14px] leading-relaxed text-bumble-black">{body}</p>
+      </div>
       {showCompliment && (
-        <button
-          type="button"
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#F3F3F3] text-bumble-black text-[14px] font-medium"
-        >
-          <MessageCircle className="w-4 h-4" strokeWidth={2} />
-          Compliment
-        </button>
+        <>
+          <div className="mt-4 mb-4 w-full border-t border-[#E5E5E5]" role="separator" />
+          <button
+            type="button"
+            className="flex items-center gap-2 self-start text-[14px] font-normal text-bumble-black"
+            aria-label="Compliment"
+          >
+            <Image
+              src="/icons/user_profile_assets/compliment section black.svg"
+              alt=""
+              width={117}
+              height={24}
+              className="h-6 w-auto object-contain object-left"
+            />
+          </button>
+        </>
       )}
     </section>
   );
@@ -50,21 +72,35 @@ export function ProfileSectionTags({
   tags,
 }: {
   title: string;
-  tags: { label: string; icon?: React.ReactNode }[];
+  tags: { label: string; emoji?: string; icon?: React.ReactNode }[];
 }) {
   return (
-    <section className="bg-white px-4 py-4">
+    <section className={`${cardClassName} gap-4`}>
       <SectionHeader title={title} />
       <div className="flex flex-wrap gap-2">
         {tags.map((tag) => (
-          <span
-            key={tag.label}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-neutral-200 bg-white text-[14px] text-bumble-gray"
-          >
+          <span key={tag.label} className={tagClassName}>
+            {tag.emoji && <span className="shrink-0">{tag.emoji}</span>}
             {tag.icon}
-            {tag.label}
+            <span>{tag.label}</span>
           </span>
         ))}
+      </div>
+    </section>
+  );
+}
+
+export function ProfileSectionLocation({ location }: { location: string }) {
+  return (
+    <section className={`${cardClassName} gap-4`}>
+      <SectionHeader title="My location" />
+      <div className="flex items-center gap-2">
+        <MapPin
+          className="h-5 w-5 shrink-0 text-[#E25B45]"
+          strokeWidth={2}
+          aria-hidden
+        />
+        <span className="text-[14px] text-bumble-black">{location}</span>
       </div>
     </section>
   );
