@@ -10,8 +10,17 @@ const BEE_BODY_PATH =
   "M17.7592 23.7632C18.2189 24.9599 18.0629 26.0761 17.2912 27.1119C16.5194 28.1479 15.4437 28.6659 14.0642 28.6659C13.3993 28.6659 12.7733 28.4856 12.1862 28.1249C11.5988 27.7642 11.1539 27.2813 10.8515 26.6762C9.22061 26.8402 7.85738 26.3766 6.76183 25.2852C5.66605 24.1937 5.1865 22.8231 5.32316 21.1736C4.69072 20.8471 4.20105 20.3753 3.85416 19.7582C3.50705 19.1411 3.3335 18.4402 3.3335 17.6556C3.3335 16.4027 3.89894 15.4108 5.02983 14.6799C6.1605 13.9492 7.29761 13.8198 8.44116 14.2916L10.3542 15.0812C10.7215 14.3326 11.2569 13.7223 11.9605 13.2506C12.6638 12.7788 13.4377 12.5207 14.2822 12.4762V10.5632C14.2822 10.3343 14.3574 10.1447 14.5078 9.99422C14.6583 9.84378 14.8481 9.76855 15.0772 9.76855C15.3061 9.76855 15.4957 9.84378 15.6462 9.99422C15.7966 10.1447 15.8718 10.3343 15.8718 10.5632V12.6402C16.7625 12.8162 17.5108 13.2039 18.1168 13.8032C18.7228 14.4023 19.1592 15.1942 19.4258 16.1789H21.4618C21.6907 16.1789 21.8804 16.254 22.0308 16.4042C22.1813 16.5547 22.2565 16.7444 22.2565 16.9736C22.2565 17.2027 22.1813 17.3924 22.0308 17.5429C21.8804 17.6933 21.6907 17.7686 21.4618 17.7686H19.5488C19.5044 18.6043 19.2488 19.374 18.7822 20.0776C18.3155 20.7809 17.7078 21.3206 16.9592 21.6966L17.7592 23.7632ZM10.2875 24.7172C10.2446 24.1172 10.2711 23.5189 10.3668 22.9222C10.4626 22.3258 10.6191 21.7394 10.8362 21.1632C10.2993 21.4077 9.72361 21.5736 9.10916 21.6609C8.49472 21.748 7.88572 21.7564 7.28216 21.6862C7.30794 22.5958 7.59861 23.3283 8.15416 23.8839C8.70972 24.4394 9.42083 24.7172 10.2875 24.7172ZM7.92316 19.7122C8.68561 19.7122 9.40316 19.5933 10.0758 19.3556C10.7485 19.118 11.5438 18.6983 12.4618 18.0966L8.02583 16.2249C7.33005 15.9327 6.70738 15.9447 6.15783 16.2609C5.60827 16.5771 5.3335 17.0693 5.3335 17.7376C5.3335 18.3582 5.56083 18.8424 6.0155 19.1902C6.47016 19.5382 7.10605 19.7122 7.92316 19.7122ZM14.0642 26.6659C14.7137 26.6659 15.2364 26.4351 15.6322 25.9736C16.0279 25.512 16.1198 25.0231 15.9078 24.5069L13.9795 19.6146C13.4206 20.4283 12.9988 21.2186 12.7142 21.9852C12.4295 22.7519 12.2872 23.4711 12.2872 24.1429C12.2872 24.9189 12.4449 25.5334 12.7605 25.9866C13.0758 26.4394 13.5104 26.6659 14.0642 26.6659ZM16.1745 19.8046C16.5847 19.5652 16.9164 19.2216 17.1695 18.7736C17.4224 18.3258 17.5488 17.842 17.5488 17.3222C17.5488 16.5258 17.2814 15.8489 16.7465 15.2916C16.2114 14.7342 15.5524 14.4556 14.7695 14.4556C14.2242 14.4556 13.7288 14.5821 13.2835 14.8352C12.8382 15.0881 12.5061 15.4266 12.2872 15.8506L15.0412 17.0762L16.1745 19.8046Z";
 
 const DELAY_MS = 3000;
+const ACTIVE_YELLOW = "#FFD93A";
 
-export function BeelineHeaderIcon({ className }: { className?: string }) {
+export function BeelineHeaderIcon({
+  className,
+  onClick,
+  isActive = false,
+}: {
+  className?: string;
+  onClick?: () => void;
+  isActive?: boolean;
+}) {
   const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
@@ -21,17 +30,29 @@ export function BeelineHeaderIcon({ className }: { className?: string }) {
     return () => clearTimeout(timer);
   }, []);
 
-  return (
+  const fillColor = isActive ? ACTIVE_YELLOW : "#202020";
+  const flowerFill = isActive ? ACTIVE_YELLOW : showAlert ? "#E00900" : "#202020";
+  const circleFill = isActive ? ACTIVE_YELLOW : "#E00900";
+  const showCircle = showAlert || isActive;
+
+  const svg = (
     <svg
       width="24"
       height="24"
       viewBox="0 0 32 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={className}
+      className={onClick ? "block h-full w-full" : className}
     >
-      {/* Bee body - always visible */}
-      <path d={BEE_BODY_PATH} fill="#202020" />
+      {/* Bee body - black by default, full yellow when isActive */}
+      <motion.path
+        d={BEE_BODY_PATH}
+        initial={{ fill: "#202020" }}
+        animate={{
+          fill: fillColor,
+          transition: { duration: 0.3, ease: "easeOut" },
+        }}
+      />
 
       {/* Flower part - spins with physics and turns red */}
       <motion.g
@@ -59,37 +80,33 @@ export function BeelineHeaderIcon({ className }: { className?: string }) {
         <motion.path
           d={FLOWER_PATH}
           initial={{ fill: "#202020" }}
-          animate={
-            showAlert
-              ? {
-                  fill: "#E00900",
-                  transition: {
-                    fill: {
-                      delay: 0.15,
-                      duration: 0.4,
-                      ease: "easeOut",
-                    },
-                  },
-                }
-              : {}
-          }
+          animate={{
+            fill: flowerFill,
+            transition: {
+              fill: {
+                delay: isActive ? 0 : 0.15,
+                duration: 0.4,
+                ease: "easeOut",
+              },
+            },
+          }}
         />
       </motion.g>
 
-      {/* Red alert circle - fades in after flower turns red */}
+      {/* Alert circle - red or yellow when active */}
       <motion.circle
         cx="24"
         cy="8"
         r="2"
-        fill="#E00900"
+        fill={circleFill}
         initial={{ opacity: 0, scale: 0 }}
         animate={
-          showAlert
+          showCircle
             ? {
                 opacity: 1,
                 scale: 1,
                 transition: {
-                  delay: 0.35,
+                  delay: isActive ? 0 : 0.35,
                   type: "spring",
                   stiffness: 400,
                   damping: 20,
@@ -100,4 +117,18 @@ export function BeelineHeaderIcon({ className }: { className?: string }) {
       />
     </svg>
   );
+
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className={`touch-manipulation shrink-0 ${className ?? ""}`}
+        aria-label="Open Beeline"
+      >
+        {svg}
+      </button>
+    );
+  }
+  return <span className={className}>{svg}</span>;
 }

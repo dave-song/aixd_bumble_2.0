@@ -7,11 +7,14 @@ import {
   ProfileSectionTags,
   ProfileSectionText,
 } from "@/components/profile";
+import { BeelinePopoverCard } from "@/components/beeline/BeelinePopoverCard";
 
 export default function DiscoverPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const dogAndLocationRef = useRef<HTMLDivElement>(null);
   const [likeButtonOpacity, setLikeButtonOpacity] = useState(1);
+  const [beelineCardOpen, setBeelineCardOpen] = useState(false);
+  const [beelineIconActive, setBeelineIconActive] = useState(false);
 
   useEffect(() => {
     const scrollEl = scrollRef.current;
@@ -72,11 +75,28 @@ export default function DiscoverPage() {
             className="absolute right-[52px] top-1/2 flex h-[42px] -translate-y-1/2 items-center justify-center"
             aria-hidden
           >
-            <BeelineHeaderIcon className="h-9 w-9" />
+            <BeelineHeaderIcon
+              className="h-9 w-9"
+              onClick={() => setBeelineCardOpen(true)}
+              isActive={beelineIconActive}
+            />
           </div>
         </header>
 
-        <div className="flex min-h-0 flex-1 justify-center bg-white pb-4">
+        <div className="flex min-h-0 flex-1 flex-col items-center bg-white pb-4">
+          {/* Beeline card in flow: same width as profile card, pushes content down */}
+          {beelineCardOpen && (
+            <div className="w-full max-w-[411px] shrink-0 px-0 pb-4">
+              <BeelinePopoverCard
+                onClose={() => setBeelineCardOpen(false)}
+                onFullyExpanded={() => setBeelineIconActive(true)}
+                onAnswer={() => {
+                  setBeelineCardOpen(false);
+                  scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              />
+            </div>
+          )}
           <div
             className="relative flex h-full min-h-[512px] w-[411px] min-w-[411px] max-w-[411px] flex-col overflow-hidden rounded-[18px] bg-[#FFFFFF] shadow-[0_0_12px_0_rgba(0,0,0,0.25)]"
             style={{ boxSizing: "border-box" }}
