@@ -75,7 +75,7 @@ export default function InterestsPage() {
         <div className="flex-1 flex flex-col px-[20px] pt-[24px] overflow-hidden">
           {/* Title & Subtitle */}
           <h1 className="text-[28px] font-medium text-bumble-black leading-[34px] mb-[8px]">
-            Choose 5 things you're really into
+            {"Choose 5 things you're really into"}
           </h1>
           <p className="text-[16px] text-bumble-gray leading-[22px] mb-[24px]">
             Proud foodie or big on bouldering? Add interests to your profile to help you match with people who love them too.

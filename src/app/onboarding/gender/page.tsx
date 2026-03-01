@@ -56,7 +56,7 @@ export default function GenderPage() {
             {userName} is a great name
           </h1>
           <p className="text-[16px] text-bumble-gray leading-[22px] mb-[32px]">
-            We love that you're here. Pick the gender that best describes you, then add more about it if you like.
+            {"We love that you're here. Pick the gender that best describes you, then add more about it if you like."}
           </p>
 
           {/* Section Header */}

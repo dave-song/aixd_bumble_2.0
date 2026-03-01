@@ -1,0 +1,19 @@
+---
+description: Do not change onboarding pages unless the user explicitly requests it
+alwaysApply: true
+---
+
+# Onboarding Pages — Do Not Edit Unless Asked
+
+The onboarding flow is **implemented and finalized**. Do not modify any onboarding pages, components, or flow logic unless the user **explicitly asks** for a specific change to onboarding.
+
+**In scope (do not change accidentally):**
+- `src/app/onboarding/**` (all onboarding routes: name, gender, interests, life, values, notifications)
+- Onboarding-specific components and their usage in the onboarding flow
+
+**Allowed:**
+- Changes the user explicitly requests for onboarding (e.g. "change the interests page search bar", "add a step after life")
+- Fixing critical bugs the user reports in onboarding
+- Reading or referencing onboarding code when working on other features
+
+When refactoring, adding features, or cleaning code elsewhere in the app, do not "tidy" or alter onboarding files unless the user has asked for it.

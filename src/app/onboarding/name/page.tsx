@@ -42,10 +42,10 @@ export default function NamePage() {
         <div className="flex-1 flex flex-col px-[20px] pt-[24px]">
           {/* Title */}
           <h1 className="text-[28px] font-medium text-bumble-black leading-[34px] mb-[12px]">
-            What's your first name?
+            {"What's your first name?"}
           </h1>
           <p className="text-[16px] text-bumble-gray leading-[22px] mb-[32px]">
-            This is how you'll appear on Bumble. You won't be able to change it later.
+            {"This is how you'll appear on Bumble. You won't be able to change it later."}
           </p>
 
           {/* Name Input */}
