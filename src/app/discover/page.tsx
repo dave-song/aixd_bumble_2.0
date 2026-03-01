@@ -26,14 +26,15 @@ export default function DiscoverPage() {
             className="flex h-full min-h-[512px] w-[411px] min-w-[411px] max-w-[411px] flex-col overflow-hidden rounded-[18px] bg-white"
             style={{ boxSizing: "border-box" }}
           >
-            <div className="profile-scroll flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overflow-x-hidden px-[10px] pb-4 pt-0">
+            <div className="profile-scroll flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overflow-x-hidden pb-4 pt-0">
               <img
                 src="/icons/haris profile card.svg"
                 alt="Hari, 27 - Project Manager at Tech, Carnegie Mellon"
                 className="block w-full shrink-0 object-contain object-top"
               />
 
-              {/* Profile sections from Figma flow (node 1068-8435) */}
+              {/* Profile sections and below: inset to match card width */}
+              <div className="flex flex-col gap-4 px-[10px]">
               <ProfileSectionText
                 title="My bio"
                 body="cat mom, mid runner, and can cook 4 different things"
@@ -131,6 +132,7 @@ export default function DiscoverPage() {
                     Report
                   </button>
                 </div>
+              </div>
               </div>
             </div>
           </div>
