@@ -21,13 +21,13 @@ export default function DiscoverPage() {
           />
         </header>
 
-        <div className="flex min-h-0 flex-1 justify-center bg-white">
+        <div className="flex min-h-0 flex-1 justify-center bg-white pb-4">
           <div
             className="flex h-full min-h-[512px] w-[411px] min-w-[411px] max-w-[411px] flex-col overflow-hidden rounded-[18px] bg-[#FFFFFF] shadow-[0_0_12px_0_rgba(0,0,0,0.25)]"
             style={{ boxSizing: "border-box" }}
           >
             <div
-              className="profile-scroll flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overflow-x-hidden bg-[#FFFFFF] pb-4 pt-0"
+              className="profile-scroll flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overflow-x-hidden bg-[#FFFFFF] pb-12 pt-0"
             >
               <img
                 src="/icons/haris profile card.svg"
