@@ -103,11 +103,27 @@ export default function DiscoverPage() {
                   { label: "Liberal", emoji: "🏛️" },
                 ]}
               />
-              <img
-                src="/icons/user_profile_assets/p1.png"
-                alt=""
-                className="w-full rounded-2xl object-cover"
-              />
+              <div className="relative w-full">
+                <img
+                  src="/icons/user_profile_assets/p1.png"
+                  alt=""
+                  className="w-full rounded-2xl object-cover"
+                />
+                <div
+                  className="absolute bottom-4 left-0 right-0 flex items-center justify-between"
+                  style={{ paddingLeft: 16, paddingRight: 16 }}
+                >
+                  <img
+                    src="/icons/compliment section.svg"
+                    alt=""
+                    width={200}
+                    height={52}
+                    className="shrink-0 object-contain"
+                    style={{ width: 200, height: 52, marginLeft: -34 }}
+                  />
+                  <img src="/icons/bumble_image_button.svg" alt="Beeline" className="h-[34px] w-auto shrink-0 object-contain" />
+                </div>
+              </div>
               <ProfileSectionTags
                 title="I'm looking for"
                 tags={[
@@ -127,20 +143,52 @@ export default function DiscoverPage() {
                   { label: "Cats", emoji: "🐱" },
                 ]}
               />
-              <img
-                src="/icons/user_profile_assets/p2.png"
-                alt=""
-                className="w-full rounded-2xl object-cover"
-              />
+              <div className="relative w-full">
+                <img
+                  src="/icons/user_profile_assets/p2.png"
+                  alt=""
+                  className="w-full rounded-2xl object-cover"
+                />
+                <div
+                  className="absolute bottom-4 left-0 right-0 flex items-center justify-between"
+                  style={{ paddingLeft: 16, paddingRight: 16 }}
+                >
+                  <img
+                    src="/icons/compliment section.svg"
+                    alt=""
+                    width={200}
+                    height={52}
+                    className="shrink-0 object-contain"
+                    style={{ width: 200, height: 52, marginLeft: -34 }}
+                  />
+                  <img src="/icons/bumble_image_button.svg" alt="Beeline" className="h-[34px] w-auto shrink-0 object-contain" />
+                </div>
+              </div>
               <ProfileSectionText
                 title="When I unplug I like to"
                 body="Read, draw, journal, play guitar or cello, cook?, meditate"
               />
-              <img
-                src="/icons/user_profile_assets/p3.png"
-                alt=""
-                className="w-full rounded-2xl object-cover"
-              />
+              <div className="relative w-full">
+                <img
+                  src="/icons/user_profile_assets/p3.png"
+                  alt=""
+                  className="w-full rounded-2xl object-cover"
+                />
+                <div
+                  className="absolute bottom-4 left-0 right-0 flex items-center justify-between"
+                  style={{ paddingLeft: 16, paddingRight: 16 }}
+                >
+                  <img
+                    src="/icons/compliment section.svg"
+                    alt=""
+                    width={200}
+                    height={52}
+                    className="shrink-0 object-contain"
+                    style={{ width: 200, height: 52, marginLeft: -34 }}
+                  />
+                  <img src="/icons/bumble_image_button.svg" alt="Beeline" className="h-[34px] w-auto shrink-0 object-contain" />
+                </div>
+              </div>
               <ProfileSectionTags
                 title="My causes and communities"
                 tags={[
@@ -157,11 +205,27 @@ export default function DiscoverPage() {
                 body="Passion- I love when people have hobbies they're really into or social causes they participate in"
               />
               <div ref={dogAndLocationRef} className="flex flex-col gap-4">
-                <img
-                  src="/icons/user_profile_assets/p4.png"
-                  alt=""
-                  className="w-full rounded-2xl object-cover"
-                />
+                <div className="relative w-full">
+                  <img
+                    src="/icons/user_profile_assets/p4.png"
+                    alt=""
+                    className="w-full rounded-2xl object-cover"
+                  />
+                  <div
+                  className="absolute bottom-4 left-0 right-0 flex items-center justify-between"
+                  style={{ paddingLeft: 16, paddingRight: 16 }}
+                >
+                    <img
+                      src="/icons/compliment section.svg"
+                      alt=""
+                      width={200}
+                      height={52}
+                      className="shrink-0 object-contain"
+                      style={{ width: 200, height: 52, marginLeft: -34 }}
+                    />
+                    <img src="/icons/bumble_image_button.svg" alt="Beeline" className="h-[34px] w-auto shrink-0 object-contain" />
+                  </div>
+                </div>
                 <ProfileSectionLocation location="Boston" />
               </div>
 
