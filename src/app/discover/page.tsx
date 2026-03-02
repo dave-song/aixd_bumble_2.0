@@ -2,6 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { BeelineHeaderIcon, PhoneFrame, StatusBar } from "@/components/layout";
+import { MatchScreen } from "@/components/discover/MatchScreen";
+import { PostMatchChatScreen } from "@/components/discover/PostMatchChatScreen";
+import { PassScreen } from "@/components/discover/PassScreen";
+import { SwipeExplanationPanel } from "@/components/discover/SwipeExplanationPanel";
 import {
   type BeelineIconState,
   ProfileSectionLocation,
@@ -39,6 +43,10 @@ export default function DiscoverPage() {
   const [sectionSpilling, setSectionSpilling] = useState(false);
   const [sectionSpillDone, setSectionSpillDone] = useState(false);
   const [sectionFollowupCardVisible, setSectionFollowupCardVisible] = useState(true);
+  const [showMatchScreen, setShowMatchScreen] = useState(false);
+  const [showPassScreen, setShowPassScreen] = useState(false);
+  const [showPostMatchChat, setShowPostMatchChat] = useState(false);
+  const [sentMessage, setSentMessage] = useState("");
 
   useEffect(() => {
     const scrollEl = scrollRef.current;
@@ -132,6 +140,22 @@ export default function DiscoverPage() {
     (isSpilling && !isSpillDone && !beelineCardVisible) ||
     (sectionSpilling && !sectionSpillDone && !sectionFollowupCardVisible);
 
+  // Arrow keys: Left → pass frame, Right → match page
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setShowPassScreen(true);
+      }
+      if (e.key === "ArrowRight" && !showMatchScreen && !showPostMatchChat) {
+        e.preventDefault();
+        setShowMatchScreen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showMatchScreen, showPostMatchChat]);
+
   function closeSectionCard() {
     setOpenBeelineSection(null);
     setSectionSpilling(false);
@@ -170,7 +194,41 @@ export default function DiscoverPage() {
   }
 
   return (
-    <PhoneFrame>
+    <div className="min-h-screen flex items-center justify-center bg-[#444444] px-6 py-8">
+      <div className="flex w-full max-w-[1200px] items-center gap-16">
+        <div className="min-w-0 flex-1" aria-hidden />
+        <div className="shrink-0">
+          <PhoneFrame>
+      {showMatchScreen && (
+        <div className="absolute inset-0 z-50 flex flex-col bg-white">
+          <MatchScreen
+            matchedProfileId="hari"
+            matchedProfileName="Hari"
+            openingMovePlaceholder="What's your ideal first date?"
+            onClose={() => setShowMatchScreen(false)}
+            onSendMessage={(text) => {
+              setSentMessage(text);
+              setShowMatchScreen(false);
+              setShowPostMatchChat(true);
+            }}
+          />
+        </div>
+      )}
+      {showPostMatchChat && (
+        <div className="absolute inset-0 z-50 flex flex-col bg-white">
+          <PostMatchChatScreen
+            matchedProfileName="Hari"
+            openingMoveText="What's your ideal first date?"
+            sentMessage={sentMessage}
+            onClose={() => setShowPostMatchChat(false)}
+          />
+        </div>
+      )}
+      {showPassScreen && (
+        <div className="absolute inset-0 z-50 flex flex-col bg-white">
+          <PassScreen onClose={() => setShowPassScreen(false)} />
+        </div>
+      )}
       <div className="relative flex h-full w-full flex-col overflow-hidden bg-white">
         <StatusBar />
 
@@ -495,6 +553,15 @@ export default function DiscoverPage() {
           />
         </nav>
       </div>
-    </PhoneFrame>
+          </PhoneFrame>
+        </div>
+        <div className="min-w-[300px] shrink-0 flex-1 flex justify-end">
+          <SwipeExplanationPanel
+          onLeftArrowClick={() => setShowPassScreen(true)}
+          onRightArrowClick={() => setShowMatchScreen(true)}
+        />
+        </div>
+      </div>
+    </div>
   );
 }
