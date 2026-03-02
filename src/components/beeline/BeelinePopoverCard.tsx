@@ -22,6 +22,7 @@ export function BeelinePopoverCard({
   const [typedLength, setTypedLength] = useState(0);
   const [expandDone, setExpandDone] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<"yes" | "no" | null>(null);
+  const [isSpilling, setIsSpilling] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const hasFiredFullyExpanded = useRef(false);
 
@@ -147,12 +148,70 @@ export function BeelinePopoverCard({
         </button>
         <button
           type="button"
+          onClick={() => setIsSpilling(true)}
           className="flex min-w-0 flex-1 items-center justify-center gap-2 rounded-[10px] bg-[#1F1F1F] px-3 py-2 text-[16px] font-normal tracking-[-0.5px] text-white"
         >
-          <Phone size={18} className="shrink-0" />
-          <span className="truncate">Actually, let&apos;s spill...</span>
+          {isSpilling ? (
+            <>
+              <span
+                className="h-2 w-2 shrink-0 rounded-full bg-[#E00900]"
+                style={{ animation: "spill-blink 1s ease-in-out infinite" }}
+              />
+              <TeacupWithSteam className="shrink-0" />
+            </>
+          ) : (
+            <>
+              <Phone size={18} className="shrink-0" />
+              <span className="truncate">Actually, let&apos;s spill...</span>
+            </>
+          )}
         </button>
       </div>
     </motion.div>
+  );
+}
+
+/** Teacup outline with animated steam (yellow, for "spill the tea" state) */
+function TeacupWithSteam({ className }: { className?: string }) {
+  return (
+    <svg
+      width={24}
+      height={24}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      {/* Steam: wavy lines rising up */}
+      <motion.g animate={{ y: [0, -2, -4] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}>
+        <path d="M9 7 Q8 5 9 3" stroke="#FFD93A" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity={0.8} />
+      </motion.g>
+      <motion.g animate={{ y: [0, -2, -4] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}>
+        <path d="M12 6 Q13 4 12 2" stroke="#FFD93A" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity={0.8} />
+      </motion.g>
+      <motion.g animate={{ y: [0, -2, -4] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}>
+        <path d="M15 7 Q16 5 15 3" stroke="#FFD93A" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity={0.8} />
+      </motion.g>
+      {/* Cup body + rim */}
+      <path
+        d="M5 9 L5 15 C5 16.5 6.5 18 8 18 L14 18 C15.5 18 17 16.5 17 15 L17 9 L5 9"
+        stroke="#FFD93A"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      {/* Handle (right side) */}
+      <path
+        d="M17 11 L19 11 Q20 13 19 15 L17 15"
+        stroke="#FFD93A"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      {/* Saucer line */}
+      <path d="M4 18 L8 18 M14 18 L20 18" stroke="#FFD93A" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+    </svg>
   );
 }

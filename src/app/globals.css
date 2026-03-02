@@ -88,3 +88,14 @@ body {
   font-style: normal;
   font-display: swap;
 }
+
+/* Beeline "spill the tea" button: blinking red recording dot */
+@keyframes spill-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
