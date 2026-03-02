@@ -1,4 +1,5 @@
 export {
+  type BeelineIconState,
   ProfileSectionLocation,
   ProfileSectionTags,
   ProfileSectionText,

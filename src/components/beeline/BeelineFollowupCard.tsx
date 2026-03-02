@@ -1,66 +1,38 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Check, ChevronUp, Phone } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, Phone } from "lucide-react";
 import { motion } from "framer-motion";
 
-const QUESTION_TEXT =
-  "Does seeing another CMU alum with a 'tech-grind' career feel like a match for your vibe?";
 const TYPEWRITER_MS_PER_CHAR = 35;
 
-interface BeelinePopoverCardProps {
+interface BeelineFollowupCardProps {
+  question: string;
   onClose: () => void;
-  onFullyExpanded?: () => void;
   onAnswer?: (answer: "yes" | "no") => void;
+  onActually?: () => void;
   onSpillingStateChange?: (isSpilling: boolean, isSpillDone: boolean) => void;
 }
 
-export function BeelinePopoverCard({
+export function BeelineFollowupCard({
+  question,
   onClose,
-  onFullyExpanded,
   onAnswer,
+  onActually,
   onSpillingStateChange,
-}: BeelinePopoverCardProps) {
+}: BeelineFollowupCardProps) {
   const [typedLength, setTypedLength] = useState(0);
-  const [expandDone, setExpandDone] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<"yes" | "no" | null>(null);
+  const [isExiting, setIsExiting] = useState(false);
   const [isSpilling, setIsSpilling] = useState(false);
   const [isSpillDone, setIsSpillDone] = useState(false);
-  const [isExiting, setIsExiting] = useState(false);
-  const hasFiredFullyExpanded = useRef(false);
-
-  const tryFireFullyExpanded = () => {
-    if (
-      hasFiredFullyExpanded.current ||
-      !onFullyExpanded ||
-      !expandDone ||
-      typedLength < QUESTION_TEXT.length
-    ) {
-      return;
-    }
-    hasFiredFullyExpanded.current = true;
-    onFullyExpanded();
-  };
 
   // Typewriter: advance one character at a time
   useEffect(() => {
-    if (typedLength >= QUESTION_TEXT.length) {
-      tryFireFullyExpanded();
-      return;
-    }
-    const t = setTimeout(() => {
-      setTypedLength((n) => n + 1);
-    }, TYPEWRITER_MS_PER_CHAR);
+    if (typedLength >= question.length) return;
+    const t = setTimeout(() => setTypedLength((n) => n + 1), TYPEWRITER_MS_PER_CHAR);
     return () => clearTimeout(t);
-  }, [typedLength, expandDone]);
-
-  const handleExpandComplete = () => {
-    setExpandDone(true);
-  };
-
-  useEffect(() => {
-    tryFireFullyExpanded();
-  }, [expandDone, typedLength]);
+  }, [typedLength, question.length]);
 
   useEffect(() => {
     onSpillingStateChange?.(isSpilling, isSpillDone);
@@ -76,11 +48,22 @@ export function BeelinePopoverCard({
     setTimeout(() => setIsExiting(true), 200);
   };
 
+  const handleSpillButton = () => {
+    if (isSpillDone) {
+      onActually?.();
+      onClose();
+      return;
+    }
+    if (isSpilling) {
+      setIsSpillDone(true);
+    } else {
+      setIsSpilling(true);
+    }
+  };
+
   const handleAnimationComplete = () => {
     if (isExiting && selectedAnswer) {
       onAnswer?.(selectedAnswer);
-    } else {
-      handleExpandComplete();
     }
   };
 
@@ -102,34 +85,17 @@ export function BeelinePopoverCard({
       }}
       onAnimationComplete={handleAnimationComplete}
     >
-      {/* Beeline tag (SVG) + chevron row */}
-      <div className="flex items-center justify-between px-4 pt-3 pb-1">
-        <img
-          src="/icons/user_profile_assets/beeline_highlevel_tag.svg"
-          alt="Beeline"
-          className="h-7 w-auto object-contain"
-        />
-        <button
-          type="button"
-          onClick={onClose}
-          className="rounded p-1.5 text-bumble-gray hover:bg-black/5"
-          aria-label="Collapse"
-        >
-          <ChevronUp size={20} strokeWidth={2} />
-        </button>
-      </div>
-
-      {/* Question with typewriter */}
-      <div className="px-4 pb-3">
+      {/* Question text with typewriter */}
+      <div className="px-4 pt-4 pb-3">
         <p className="min-h-11 text-[16px] leading-[22px] tracking-[-0.5px] text-bumble-black">
-          {QUESTION_TEXT.slice(0, typedLength)}
-          {typedLength < QUESTION_TEXT.length && (
+          {question.slice(0, typedLength)}
+          {typedLength < question.length && (
             <span className="animate-pulse">|</span>
           )}
         </p>
       </div>
 
-      {/* Buttons: Yes & No narrow; selected = Bumble yellow */}
+      {/* Buttons: Yes, No, Actually... */}
       <div className="flex w-full items-stretch gap-2 px-4 pb-4">
         <button
           type="button"
@@ -155,14 +121,7 @@ export function BeelinePopoverCard({
         </button>
         <button
           type="button"
-          onClick={() => {
-            if (isSpillDone) return;
-            if (isSpilling) {
-              setIsSpillDone(true);
-            } else {
-              setIsSpilling(true);
-            }
-          }}
+          onClick={handleSpillButton}
           className={`flex min-w-0 flex-1 items-center justify-center gap-2 rounded-[10px] px-3 py-2 text-[16px] font-normal tracking-[-0.5px] ${
             isSpillDone
               ? "bg-[#FFD93A] text-bumble-black"
@@ -194,7 +153,7 @@ export function BeelinePopoverCard({
   );
 }
 
-/** Teacup outline with animated steam (yellow, for "spill the tea" state) */
+/** Teacup outline with animated steam (same as main Beeline card) */
 function TeacupWithSteam({ className }: { className?: string }) {
   return (
     <svg
@@ -205,67 +164,24 @@ function TeacupWithSteam({ className }: { className?: string }) {
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
-      {/* Steam: smooth wavy strokes rising gently */}
       <motion.g
-        animate={{
-          y: [0, -1.5, -3, -4.5, -6],
-          opacity: [0.5, 0.85, 0.6, 0.4, 0.5],
-        }}
-        transition={{
-          duration: 3.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
+        animate={{ y: [0, -1.5, -3, -4.5, -6], opacity: [0.5, 0.85, 0.6, 0.4, 0.5] }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
       >
-        <path
-          d="M9 8 Q8 6 9.5 4 Q11 2 9 0.5"
-          stroke="#FFD93A"
-          strokeWidth="1.1"
-          strokeLinecap="round"
-          fill="none"
-        />
+        <path d="M9 8 Q8 6 9.5 4 Q11 2 9 0.5" stroke="#FFD93A" strokeWidth="1.1" strokeLinecap="round" fill="none" />
       </motion.g>
       <motion.g
-        animate={{
-          y: [0, -1.5, -3, -4.5, -6],
-          opacity: [0.5, 0.85, 0.6, 0.4, 0.5],
-        }}
-        transition={{
-          duration: 3.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 0.5,
-        }}
+        animate={{ y: [0, -1.5, -3, -4.5, -6], opacity: [0.5, 0.85, 0.6, 0.4, 0.5] }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
       >
-        <path
-          d="M12 7 Q11 5 12.5 3 Q14 1 12 -0.5"
-          stroke="#FFD93A"
-          strokeWidth="1.1"
-          strokeLinecap="round"
-          fill="none"
-        />
+        <path d="M12 7 Q11 5 12.5 3 Q14 1 12 -0.5" stroke="#FFD93A" strokeWidth="1.1" strokeLinecap="round" fill="none" />
       </motion.g>
       <motion.g
-        animate={{
-          y: [0, -1.5, -3, -4.5, -6],
-          opacity: [0.5, 0.85, 0.6, 0.4, 0.5],
-        }}
-        transition={{
-          duration: 3.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1,
-        }}
+        animate={{ y: [0, -1.5, -3, -4.5, -6], opacity: [0.5, 0.85, 0.6, 0.4, 0.5] }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
       >
-        <path
-          d="M15 8 Q16 6 14.5 4 Q13 2 15 0.5"
-          stroke="#FFD93A"
-          strokeWidth="1.1"
-          strokeLinecap="round"
-          fill="none"
-        />
+        <path d="M15 8 Q16 6 14.5 4 Q13 2 15 0.5" stroke="#FFD93A" strokeWidth="1.1" strokeLinecap="round" fill="none" />
       </motion.g>
-      {/* Cup body + rim */}
       <path
         d="M5 9 L5 15 C5 16.5 6.5 18 8 18 L14 18 C15.5 18 17 16.5 17 15 L17 9 L5 9"
         stroke="#FFD93A"
@@ -274,7 +190,6 @@ function TeacupWithSteam({ className }: { className?: string }) {
         strokeLinejoin="round"
         fill="none"
       />
-      {/* Handle (right side) */}
       <path
         d="M17 11 L19 11 Q20 13 19 15 L17 15"
         stroke="#FFD93A"
@@ -283,7 +198,6 @@ function TeacupWithSteam({ className }: { className?: string }) {
         strokeLinejoin="round"
         fill="none"
       />
-      {/* Saucer line */}
       <path d="M4 18 L8 18 M14 18 L20 18" stroke="#FFD93A" strokeWidth="1.2" strokeLinecap="round" fill="none" />
     </svg>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin } from "lucide-react";
+import { Check, MapPin, Phone, X } from "lucide-react";
 import Image from "next/image";
 
 const cardClassName =
@@ -9,22 +9,53 @@ const cardClassName =
 const tagClassName =
   "flex h-[2.875rem] items-center gap-[0.375rem] rounded-[3rem] bg-[#F3F3F3] px-3 py-3 text-[14px] text-bumble-black";
 
-function SectionHeader({ title }: { title: string }) {
+export type BeelineIconState = "default" | "yes" | "no" | "spill-done";
+
+function SectionHeader({
+  title,
+  onBeelineClick,
+  beelineIconState = "default",
+}: {
+  title: string;
+  onBeelineClick?: () => void;
+  beelineIconState?: BeelineIconState;
+}) {
   return (
     <div className="flex w-full items-center justify-between gap-2">
       <h3 className="text-[16px] font-semibold text-bumble-black">{title}</h3>
       <button
         type="button"
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg overflow-hidden bg-bumble-black"
-        aria-label="Beeline"
+        onClick={onBeelineClick}
+        className={`flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden ${
+          beelineIconState === "yes" || beelineIconState === "no" || beelineIconState === "spill-done"
+            ? "rounded-[6px] bg-[#FFD93A]"
+            : "rounded-lg bg-bumble-black"
+        }`}
+        aria-label={
+          beelineIconState === "yes"
+            ? "Beeline: Yes"
+            : beelineIconState === "no"
+              ? "Beeline: No"
+              : beelineIconState === "spill-done"
+                ? "Beeline: Spill the tea done"
+                : "Beeline"
+        }
       >
-        <Image
-          src="/icons/user_profile_assets/beeline_btn.svg"
-          alt=""
-          width={32}
-          height={30}
-          className="h-[30px] w-[32px] object-contain"
-        />
+        {beelineIconState === "yes" ? (
+          <Check size={20} className="text-bumble-black" strokeWidth={2.5} />
+        ) : beelineIconState === "no" ? (
+          <X size={18} className="text-bumble-black" strokeWidth={2.5} />
+        ) : beelineIconState === "spill-done" ? (
+          <Phone size={20} className="text-bumble-black" strokeWidth={2} />
+        ) : (
+          <Image
+            src="/icons/user_profile_assets/beeline_btn.svg"
+            alt=""
+            width={32}
+            height={30}
+            className="h-[30px] w-[32px] object-contain"
+          />
+        )}
       </button>
     </div>
   );
@@ -34,15 +65,19 @@ export function ProfileSectionText({
   title,
   body,
   showCompliment = true,
+  onBeelineClick,
+  beelineIconState,
 }: {
   title: string;
   body: string;
   showCompliment?: boolean;
+  onBeelineClick?: () => void;
+  beelineIconState?: BeelineIconState;
 }) {
   return (
     <section className={cardClassName}>
       <div className="flex w-full flex-col gap-4">
-        <SectionHeader title={title} />
+        <SectionHeader title={title} onBeelineClick={onBeelineClick} beelineIconState={beelineIconState} />
         <p className="text-[14px] leading-relaxed text-bumble-black">{body}</p>
       </div>
       {showCompliment && (
@@ -70,13 +105,17 @@ export function ProfileSectionText({
 export function ProfileSectionTags({
   title,
   tags,
+  onBeelineClick,
+  beelineIconState,
 }: {
   title: string;
   tags: { label: string; emoji?: string; icon?: React.ReactNode }[];
+  onBeelineClick?: () => void;
+  beelineIconState?: BeelineIconState;
 }) {
   return (
     <section className={`${cardClassName} gap-4`}>
-      <SectionHeader title={title} />
+      <SectionHeader title={title} onBeelineClick={onBeelineClick} beelineIconState={beelineIconState} />
       <div className="flex flex-wrap gap-2">
         {tags.map((tag) => (
           <span key={tag.label} className={tagClassName}>
@@ -90,10 +129,18 @@ export function ProfileSectionTags({
   );
 }
 
-export function ProfileSectionLocation({ location }: { location: string }) {
+export function ProfileSectionLocation({
+  location,
+  onBeelineClick,
+  beelineIconState,
+}: {
+  location: string;
+  onBeelineClick?: () => void;
+  beelineIconState?: BeelineIconState;
+}) {
   return (
     <section className={`${cardClassName} gap-4`}>
-      <SectionHeader title="My location" />
+      <SectionHeader title="My location" onBeelineClick={onBeelineClick} beelineIconState={beelineIconState} />
       <div className="flex items-center gap-2">
         <MapPin
           className="h-5 w-5 shrink-0 text-[#E25B45]"
