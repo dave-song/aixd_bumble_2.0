@@ -182,15 +182,65 @@ function TeacupWithSteam({ className }: { className?: string }) {
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
-      {/* Steam: wavy lines rising up */}
-      <motion.g animate={{ y: [0, -2, -4] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}>
-        <path d="M9 7 Q8 5 9 3" stroke="#FFD93A" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity={0.8} />
+      {/* Steam: smooth wavy strokes rising gently */}
+      <motion.g
+        animate={{
+          y: [0, -1.5, -3, -4.5, -6],
+          opacity: [0.5, 0.85, 0.6, 0.4, 0.5],
+        }}
+        transition={{
+          duration: 3.5,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      >
+        <path
+          d="M9 8 Q8 6 9.5 4 Q11 2 9 0.5"
+          stroke="#FFD93A"
+          strokeWidth="1.1"
+          strokeLinecap="round"
+          fill="none"
+        />
       </motion.g>
-      <motion.g animate={{ y: [0, -2, -4] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}>
-        <path d="M12 6 Q13 4 12 2" stroke="#FFD93A" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity={0.8} />
+      <motion.g
+        animate={{
+          y: [0, -1.5, -3, -4.5, -6],
+          opacity: [0.5, 0.85, 0.6, 0.4, 0.5],
+        }}
+        transition={{
+          duration: 3.5,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 0.5,
+        }}
+      >
+        <path
+          d="M12 7 Q11 5 12.5 3 Q14 1 12 -0.5"
+          stroke="#FFD93A"
+          strokeWidth="1.1"
+          strokeLinecap="round"
+          fill="none"
+        />
       </motion.g>
-      <motion.g animate={{ y: [0, -2, -4] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}>
-        <path d="M15 7 Q16 5 15 3" stroke="#FFD93A" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity={0.8} />
+      <motion.g
+        animate={{
+          y: [0, -1.5, -3, -4.5, -6],
+          opacity: [0.5, 0.85, 0.6, 0.4, 0.5],
+        }}
+        transition={{
+          duration: 3.5,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1,
+        }}
+      >
+        <path
+          d="M15 8 Q16 6 14.5 4 Q13 2 15 0.5"
+          stroke="#FFD93A"
+          strokeWidth="1.1"
+          strokeLinecap="round"
+          fill="none"
+        />
       </motion.g>
       {/* Cup body + rim */}
       <path
