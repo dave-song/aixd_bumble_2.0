@@ -218,6 +218,7 @@ export default function DiscoverPage() {
         <div className="absolute inset-0 z-50 flex flex-col bg-white">
           <PostMatchChatScreen
             matchedProfileName="Hari"
+            avatarSrc="/icons/match_process_assets/haris_profile_pic.png"
             openingMoveText="What's your ideal first date?"
             sentMessage={sentMessage}
             onClose={() => setShowPostMatchChat(false)}

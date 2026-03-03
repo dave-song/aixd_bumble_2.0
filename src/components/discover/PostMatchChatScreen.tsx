@@ -1,10 +1,18 @@
 "use client";
 
-import { Camera, ChevronLeft, MessageCircle, MoreHorizontal, Video } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { Camera, ChevronLeft, MessageCircle, MoreHorizontal, Phone, Video, X } from "lucide-react";
 import { StatusBar } from "@/components/layout";
+
+const BEELINE_CARD_CONTENT =
+  "She said she's from CMU. Try asking if she's also traumatized by the lab work, or if she's one of those rare grads who actually remembers what 'sleep' feels like.";
+
+const TYPEWRITER_MS_PER_CHAR = 35;
 
 interface PostMatchChatScreenProps {
   matchedProfileName: string;
+  avatarSrc?: string;
   openingMoveText: string;
   sentMessage: string;
   onClose: () => void;
@@ -12,10 +20,26 @@ interface PostMatchChatScreenProps {
 
 export function PostMatchChatScreen({
   matchedProfileName,
+  avatarSrc,
   openingMoveText,
   sentMessage,
   onClose,
 }: PostMatchChatScreenProps) {
+  const [showBeelineCard, setShowBeelineCard] = useState(false);
+  const [beelineTypedLength, setBeelineTypedLength] = useState(0);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowBeelineCard(true), 4000);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Typewriter for Beeline card (same pattern as BeelineFollowupCard)
+  useEffect(() => {
+    if (!showBeelineCard || beelineTypedLength >= BEELINE_CARD_CONTENT.length) return;
+    const t = setTimeout(() => setBeelineTypedLength((n) => n + 1), TYPEWRITER_MS_PER_CHAR);
+    return () => clearTimeout(t);
+  }, [showBeelineCard, beelineTypedLength]);
+
   return (
     <div className="flex h-full w-full flex-col bg-bumble-white">
       <StatusBar />
@@ -33,7 +57,18 @@ export function PostMatchChatScreen({
           </button>
           <div className="flex items-center gap-[7px]">
             <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-[#f3f3f3] flex items-center justify-center text-bumble-black font-medium text-sm">
-              {matchedProfileName.charAt(0)}
+              {avatarSrc ? (
+                <Image
+                  src={avatarSrc}
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="h-full w-full object-cover"
+                  unoptimized
+                />
+              ) : (
+                matchedProfileName.charAt(0)
+              )}
             </div>
             <p className="text-[18px] font-medium leading-normal text-bumble-black">
               {matchedProfileName}
@@ -91,6 +126,50 @@ export function PostMatchChatScreen({
           </div>
           <p className="text-[14px] tracking-[-0.23px] text-bumble-gray">Delivered</p>
         </div>
+
+        {/* Beeline DM follow-up card – below last message, appears after 4s (Figma 1124:18642) */}
+        {showBeelineCard && (
+          <div className="flex w-full justify-center px-4 py-2">
+            <div
+              className="flex w-full max-w-[25.3125rem] flex-col items-start justify-center gap-2 rounded-[0.625rem] border-2 p-4"
+              style={{
+                borderColor: "rgba(255, 217, 58, 0.5)",
+                background: "var(--bright-yellow, #FFE792)",
+                boxShadow: "0 0 12px 0 #FFDB5B",
+              }}
+            >
+              <div className="flex w-full items-center justify-between">
+                <img
+                  src="/icons/user_profile_assets/beeline_highlevel_tag.svg"
+                  alt=""
+                  className="h-5 w-auto object-contain"
+                  aria-hidden
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowBeelineCard(false)}
+                  className="rounded-full p-1 text-bumble-black hover:bg-black/5"
+                  aria-label="Dismiss"
+                >
+                  <X size={18} strokeWidth={2} />
+                </button>
+              </div>
+              <p className="min-h-[3rem] text-[14px] leading-snug tracking-[-0.5px] text-bumble-black">
+                {BEELINE_CARD_CONTENT.slice(0, beelineTypedLength)}
+                {beelineTypedLength < BEELINE_CARD_CONTENT.length && (
+                  <span className="animate-pulse">|</span>
+                )}
+              </p>
+              <button
+                type="button"
+                className="flex w-full items-center justify-center gap-2 rounded-[10px] bg-bumble-black px-2 py-2 text-[16px] font-medium text-white hover:opacity-90"
+              >
+                <Phone size={20} strokeWidth={2} />
+                Call Beeline
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Bottom (Figma 1124:17996): time message wrapper + text ui row */}
