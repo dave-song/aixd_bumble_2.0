@@ -137,7 +137,7 @@ export function BeelinePopoverCard({
           className={`shrink-0 rounded-[10px] border px-4 py-2 text-[16px] font-normal tracking-[-0.5px] ${
             selectedAnswer === "yes"
               ? "border-bumble-black bg-[#FFD93A] text-[#1F1F1F]"
-              : "border-transparent bg-white text-[#1F1F1F]"
+              : "border-[#E5E5E5] bg-white text-[#1F1F1F]"
           }`}
         >
           Yes

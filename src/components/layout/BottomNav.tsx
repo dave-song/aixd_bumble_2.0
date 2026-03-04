@@ -1,6 +1,7 @@
 "use client";
 
-import { User, Compass, Users, Heart, MessageCircle } from "lucide-react";
+import { User, Compass, Heart, MessageCircle } from "lucide-react";
+import { BumbleLogo } from "@/components/ui/BumbleLogo";
 
 type TabId = "profile" | "discover" | "people" | "liked" | "chats";
 
@@ -9,10 +10,10 @@ interface BottomNavProps {
   onTabChange?: (tab: TabId) => void;
 }
 
-const tabs: { id: TabId; label: string; icon: typeof User }[] = [
+const tabs: { id: TabId; label: string; icon?: typeof User }[] = [
   { id: "profile", label: "Profile", icon: User },
   { id: "discover", label: "Discover", icon: Compass },
-  { id: "people", label: "People", icon: Users },
+  { id: "people", label: "People" },
   { id: "liked", label: "Liked You", icon: Heart },
   { id: "chats", label: "Chats", icon: MessageCircle },
 ];
@@ -32,21 +33,19 @@ export function BottomNav({ activeTab = "people", onTabChange }: BottomNavProps)
             className="flex flex-col items-center gap-[4px] min-w-[60px]"
           >
             <div className="relative">
-              {isPeople && isActive ? (
-                <div className="w-[24px] h-[24px] bg-bumble-black rounded-full flex items-center justify-center">
-                  <Icon
-                    size={14}
-                    className="text-white"
-                    strokeWidth={2}
-                  />
-                </div>
-              ) : (
+              {isPeople ? (
+                <BumbleLogo
+                  size={24}
+                  useCurrentColor
+                  className={isActive ? "text-bumble-black" : "text-neutral-400"}
+                />
+              ) : Icon ? (
                 <Icon
                   size={24}
                   className={isActive ? "text-bumble-black" : "text-neutral-400"}
                   strokeWidth={1.5}
                 />
-              )}
+              ) : null}
               {tab.id === "discover" && (
                 <div className="absolute -top-0.5 -right-0.5 w-[6px] h-[6px] bg-red-500 rounded-full" />
               )}

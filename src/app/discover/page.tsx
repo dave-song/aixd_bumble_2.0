@@ -1,568 +1,156 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { BeelineHeaderIcon, PhoneFrame, StatusBar } from "@/components/layout";
-import { MatchScreen } from "@/components/discover/MatchScreen";
-import { PostMatchChatScreen } from "@/components/discover/PostMatchChatScreen";
-import { PassScreen } from "@/components/discover/PassScreen";
-import { SwipeExplanationPanel } from "@/components/discover/SwipeExplanationPanel";
-import {
-  type BeelineIconState,
-  ProfileSectionLocation,
-  ProfileSectionTags,
-  ProfileSectionText,
-} from "@/components/profile";
-import { BeelineFollowupCard } from "@/components/beeline/BeelineFollowupCard";
-import { BeelinePopoverCard } from "@/components/beeline/BeelinePopoverCard";
-import { VoiceWaveUI } from "@/components/beeline/VoiceWaveUI";
-import {
-  type BeelineSectionId,
-  BEELINE_SECTION_QUESTIONS,
-} from "@/lib/beelineSectionQuestions";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Settings, HelpCircle, Heart, BadgeCheck } from "lucide-react";
+import { StatusBar } from "@/components/layout";
+import { BottomNav } from "@/components/layout/BottomNav";
+import { PhoneFrame } from "@/components/layout/PhoneFrame";
 
-function getSectionIconState(
-  state: Record<string, BeelineIconState>,
-  id: BeelineSectionId
-): BeelineIconState {
-  return state[id] ?? "default";
-}
+const DISCOVER_CARDS = [
+  {
+    id: "maya",
+    name: "Maya",
+    age: 26,
+    imageSrc: "/icons/user_profile_assets/p1.png",
+    verified: true,
+  },
+  {
+    id: "elena",
+    name: "Elena",
+    age: 28,
+    imageSrc: "/icons/user_profile_assets/Elena_profile_img.png",
+    verified: true,
+  },
+] as const;
 
 export default function DiscoverPage() {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const dogAndLocationRef = useRef<HTMLDivElement>(null);
-  const beelineCardRef = useRef<HTMLDivElement>(null);
-  const sectionFollowupCardRef = useRef<HTMLDivElement>(null);
-  const [likeButtonOpacity, setLikeButtonOpacity] = useState(1);
-  const [beelineCardOpen, setBeelineCardOpen] = useState(false);
-  const [beelineIconActive, setBeelineIconActive] = useState(false);
-  const [isSpilling, setIsSpilling] = useState(false);
-  const [isSpillDone, setIsSpillDone] = useState(false);
-  const [beelineCardVisible, setBeelineCardVisible] = useState(true);
-  const [openBeelineSection, setOpenBeelineSection] = useState<BeelineSectionId | null>(null);
-  const [sectionIconState, setSectionIconState] = useState<Record<string, BeelineIconState>>({});
-  const [sectionSpilling, setSectionSpilling] = useState(false);
-  const [sectionSpillDone, setSectionSpillDone] = useState(false);
-  const [sectionFollowupCardVisible, setSectionFollowupCardVisible] = useState(true);
-  const [showMatchScreen, setShowMatchScreen] = useState(false);
-  const [showPassScreen, setShowPassScreen] = useState(false);
-  const [showPostMatchChat, setShowPostMatchChat] = useState(false);
-  const [sentMessage, setSentMessage] = useState("");
+  const router = useRouter();
 
-  useEffect(() => {
-    const scrollEl = scrollRef.current;
-    const triggerEl = dogAndLocationRef.current;
-    if (!scrollEl || !triggerEl) return;
-
-    const updateOpacity = () => {
-      const { scrollTop, clientHeight, scrollHeight } = scrollEl;
-      const atEnd = scrollTop + clientHeight >= scrollHeight - 8;
-      if (atEnd) {
-        setLikeButtonOpacity(0);
-        return;
-      }
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [e] = entries;
-        if (!e) return;
-        const { scrollTop, clientHeight, scrollHeight } = scrollEl;
-        const atEnd = scrollTop + clientHeight >= scrollHeight - 8;
-        if (atEnd) {
-          setLikeButtonOpacity(0);
-          return;
-        }
-        const ratio = Math.min(1, Math.max(0, e.intersectionRatio));
-        setLikeButtonOpacity(1 - ratio);
-      },
-      {
-        root: scrollEl,
-        rootMargin: "0px",
-        threshold: [0, 0.25, 0.5, 0.75, 1],
-      },
-    );
-
-    scrollEl.addEventListener("scroll", updateOpacity, { passive: true });
-    updateOpacity();
-
-    observer.observe(triggerEl);
-    return () => {
-      observer.disconnect();
-      scrollEl.removeEventListener("scroll", updateOpacity);
-    };
-  }, []);
-
-  // Detect when Beeline card scrolls out of view (for Voice Wave UI)
-  useEffect(() => {
-    const scrollEl = scrollRef.current;
-    const cardEl = beelineCardRef.current;
-    if (!scrollEl || !cardEl || !beelineCardOpen) {
-      setBeelineCardVisible(true);
-      return;
-    }
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [e] = entries;
-        if (!e) return;
-        setBeelineCardVisible(e.isIntersecting);
-      },
-      {
-        root: scrollEl,
-        rootMargin: "0px",
-        threshold: 0,
-      }
-    );
-    observer.observe(cardEl);
-    return () => observer.disconnect();
-  }, [beelineCardOpen]);
-
-  // Detect when section follow-up card scrolls out of view (for Voice Wave UI)
-  useEffect(() => {
-    const scrollEl = scrollRef.current;
-    const cardEl = sectionFollowupCardRef.current;
-    if (!scrollEl || !cardEl || !openBeelineSection) {
-      setSectionFollowupCardVisible(true);
-      return;
-    }
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [e] = entries;
-        if (!e) return;
-        setSectionFollowupCardVisible(e.isIntersecting);
-      },
-      { root: scrollEl, rootMargin: "0px", threshold: 0 }
-    );
-    observer.observe(cardEl);
-    return () => observer.disconnect();
-  }, [openBeelineSection]);
-
-  const showVoiceWaveUI =
-    (isSpilling && !isSpillDone && !beelineCardVisible) ||
-    (sectionSpilling && !sectionSpillDone && !sectionFollowupCardVisible);
-
-  // Arrow keys: Left → pass frame, Right → match page
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        setShowPassScreen(true);
-      }
-      if (e.key === "ArrowRight" && !showMatchScreen && !showPostMatchChat) {
-        e.preventDefault();
-        setShowMatchScreen(true);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [showMatchScreen, showPostMatchChat]);
-
-  function closeSectionCard() {
-    setOpenBeelineSection(null);
-    setSectionSpilling(false);
-    setSectionSpillDone(false);
-  }
-
-  function handleSectionAnswer(sectionId: BeelineSectionId, answer: "yes" | "no") {
-    setSectionIconState((prev) => ({ ...prev, [sectionId]: answer }));
-    setOpenBeelineSection(null);
-  }
-
-  function handleSectionActually(sectionId: BeelineSectionId) {
-    setSectionIconState((prev) => ({ ...prev, [sectionId]: "spill-done" }));
-    closeSectionCard();
-  }
-
-  function renderSectionFollowupCard(sectionId: BeelineSectionId) {
-    if (openBeelineSection !== sectionId) return null;
-    return (
-      <div
-        ref={sectionFollowupCardRef}
-        className="w-full shrink-0"
-      >
-        <BeelineFollowupCard
-          question={BEELINE_SECTION_QUESTIONS[sectionId]}
-          onClose={closeSectionCard}
-          onAnswer={(answer) => handleSectionAnswer(sectionId, answer)}
-          onSpillingStateChange={(spilling, done) => {
-            setSectionSpilling(spilling);
-            setSectionSpillDone(done);
-          }}
-          onActually={() => handleSectionActually(sectionId)}
-        />
-      </div>
-    );
-  }
+  const handleTabChange = (tab: string) => {
+    if (tab === "profile") router.push("/profile");
+    if (tab === "people") router.push("/people");
+    if (tab === "liked") router.push("/liked");
+    if (tab === "chats") router.push("/chats");
+    if (tab === "discover") return;
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#444444] px-6 py-8">
-      <div className="flex w-full max-w-[1200px] items-center gap-16">
-        <div className="min-w-0 flex-1" aria-hidden />
-        <div className="shrink-0">
-          <PhoneFrame>
-      {showMatchScreen && (
-        <div className="absolute inset-0 z-50 flex flex-col bg-white">
-          <MatchScreen
-            matchedProfileId="hari"
-            matchedProfileName="Hari"
-            openingMovePlaceholder="What's your ideal first date?"
-            onClose={() => setShowMatchScreen(false)}
-            onSendMessage={(text) => {
-              setSentMessage(text);
-              setShowMatchScreen(false);
-              setShowPostMatchChat(true);
-            }}
-          />
-        </div>
-      )}
-      {showPostMatchChat && (
-        <div className="absolute inset-0 z-50 flex flex-col bg-white">
-          <PostMatchChatScreen
-            matchedProfileName="Hari"
-            avatarSrc="/icons/match_process_assets/haris_profile_pic.png"
-            openingMoveText="What's your ideal first date?"
-            sentMessage={sentMessage}
-            onClose={() => setShowPostMatchChat(false)}
-          />
-        </div>
-      )}
-      {showPassScreen && (
-        <div className="absolute inset-0 z-50 flex flex-col bg-white">
-          <PassScreen onClose={() => setShowPassScreen(false)} />
-        </div>
-      )}
-      <div className="relative flex h-full w-full flex-col overflow-hidden bg-white">
+    <PhoneFrame>
+      <div className="flex h-full w-full flex-col bg-white">
         <StatusBar />
 
-        <header className="relative flex w-full shrink-0 items-center justify-center bg-white">
-          <img
-            src="/icons/bumble-top-header-no-bee.svg"
-            alt="Bumble"
-            className="h-[42px] w-full shrink-0 object-contain object-left"
-          />
-          <div
-            className="absolute right-[52px] top-1/2 flex h-[42px] -translate-y-1/2 items-center justify-center"
-            aria-hidden
-          >
-            <BeelineHeaderIcon
-              className="h-9 w-9"
-              onClick={() => setBeelineCardOpen(true)}
-              isActive={beelineIconActive}
-            />
-          </div>
-        </header>
-
-        <div className="flex min-h-0 flex-1 flex-col items-center bg-white pb-4">
-          <div
-            className="relative flex h-full min-h-[512px] w-[411px] min-w-[411px] max-w-[411px] flex-col overflow-hidden rounded-[18px] bg-[#FFFFFF] shadow-[0_0_12px_0_rgba(0,0,0,0.25)]"
-            style={{ boxSizing: "border-box" }}
-          >
-            {/* Voice Wave UI: shown when spilling (main or section follow-up) and that card has scrolled out of view */}
-            {showVoiceWaveUI && (
-              <div className="absolute right-[1.12rem] top-[1.12rem] z-10">
-                <VoiceWaveUI />
-              </div>
-            )}
-            <div
-              ref={scrollRef}
-              className="profile-scroll flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overflow-x-hidden bg-[#FFFFFF] pb-12 pt-0"
+        {/* Header: Discover title + icons (Figma 1265-26553) */}
+        <div className="flex shrink-0 items-center justify-between bg-white px-4 pt-2">
+          <h1 className="text-[32px] font-bold leading-[42px] text-bumble-black">
+            Discover
+          </h1>
+          <div className="flex items-center gap-[15px]">
+            <button
+              type="button"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-bumble-black hover:bg-black/5"
+              aria-label="Settings"
             >
-              {/* Beeline card scrolls with profile content */}
-              {beelineCardOpen && (
-                <div ref={beelineCardRef} className="w-full shrink-0 pb-4">
-                  <BeelinePopoverCard
-                    onClose={() => {
-                      setBeelineCardOpen(false);
-                      setIsSpilling(false);
-                      setIsSpillDone(false);
-                    }}
-                    onFullyExpanded={() => setBeelineIconActive(true)}
-                    onSpillingStateChange={(spilling, done) => {
-                      setIsSpilling(spilling);
-                      setIsSpillDone(done);
-                    }}
-                    onAnswer={() => {
-                      setBeelineCardOpen(false);
-                      scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-                    }}
-                  />
-                </div>
-              )}
-              <img
-                src="/icons/haris profile card.svg"
-                alt="Hari, 27 - Project Manager at Tech, Carnegie Mellon"
-                className="block w-full shrink-0 object-contain object-top"
-              />
-
-              {/* Profile sections and below: inset to card width */}
-              <div className="flex flex-col gap-4 px-[10px]">
-                <ProfileSectionText
-                  title="My bio"
-                  body="cat mom, mid runner, and can cook 4 different things"
-                  onBeelineClick={() => setOpenBeelineSection("my-bio")}
-                  beelineIconState={getSectionIconState(sectionIconState, "my-bio")}
-                />
-                {renderSectionFollowupCard("my-bio")}
-                <ProfileSectionTags
-                  title="About me"
-                  tags={[
-                    { label: "5'10\"", emoji: "📏" },
-                    { label: "Active", emoji: "🤸" },
-                    { label: "undergraduate degree", emoji: "🎓" },
-                    { label: "Woman", emoji: "🚺" },
-                    { label: "Open to kids", emoji: "🍼" },
-                    { label: "Aries", emoji: "♈" },
-                    { label: "Liberal", emoji: "🏛️" },
-                  ]}
-                  onBeelineClick={() => setOpenBeelineSection("about-me")}
-                  beelineIconState={getSectionIconState(sectionIconState, "about-me")}
-                />
-                {renderSectionFollowupCard("about-me")}
-                <div className="relative w-full">
-                  <img
-                    src="/icons/user_profile_assets/p1.png"
-                    alt=""
-                    className="w-full rounded-2xl object-cover"
-                  />
-                  <div
-                    className="absolute bottom-4 left-0 right-0 flex items-center justify-between"
-                    style={{ paddingLeft: 16, paddingRight: 16 }}
-                  >
-                    <img
-                      src="/icons/compliment section.svg"
-                      alt=""
-                      width={200}
-                      height={52}
-                      className="shrink-0 object-contain"
-                      style={{ width: 200, height: 52, marginLeft: -34 }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setOpenBeelineSection("picture1")}
-                      className="h-[34px] w-auto shrink-0 cursor-pointer border-0 bg-transparent p-0"
-                      aria-label="Beeline"
-                    >
-                      <img
-                        src="/icons/bumble_image_button.svg"
-                        alt=""
-                        className="h-[34px] w-auto object-contain"
-                      />
-                    </button>
-                  </div>
-                </div>
-                {renderSectionFollowupCard("picture1")}
-                <ProfileSectionTags
-                  title="I'm looking for"
-                  tags={[
-                    { label: "Early morning", emoji: "🌄" },
-                    { label: "Ambition", emoji: "🎯" },
-                    { label: "Humor", emoji: "😁" },
-                    { label: "Emotional intelligence", emoji: "❤️" },
-                  ]}
-                  onBeelineClick={() => setOpenBeelineSection("im-looking-for")}
-                  beelineIconState={getSectionIconState(sectionIconState, "im-looking-for")}
-                />
-                {renderSectionFollowupCard("im-looking-for")}
-                <ProfileSectionTags
-                  title="My interests"
-                  tags={[
-                    { label: "Art", emoji: "🎨" },
-                    { label: "Foodie", emoji: "🍜" },
-                    { label: "Journaling", emoji: "✍️" },
-                    { label: "Movies", emoji: "🍿" },
-                    { label: "Cats", emoji: "🐱" },
-                  ]}
-                  onBeelineClick={() => setOpenBeelineSection("my-interests")}
-                  beelineIconState={getSectionIconState(sectionIconState, "my-interests")}
-                />
-                {renderSectionFollowupCard("my-interests")}
-                <div className="relative w-full">
-                  <img
-                    src="/icons/user_profile_assets/p2.png"
-                    alt=""
-                    className="w-full rounded-2xl object-cover"
-                  />
-                  <div
-                    className="absolute bottom-4 left-0 right-0 flex items-center justify-between"
-                    style={{ paddingLeft: 16, paddingRight: 16 }}
-                  >
-                    <img
-                      src="/icons/compliment section.svg"
-                      alt=""
-                      width={200}
-                      height={52}
-                      className="shrink-0 object-contain"
-                      style={{ width: 200, height: 52, marginLeft: -34 }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setOpenBeelineSection("picture2")}
-                      className="h-[34px] w-auto shrink-0 cursor-pointer border-0 bg-transparent p-0"
-                      aria-label="Beeline"
-                    >
-                      <img
-                        src="/icons/bumble_image_button.svg"
-                        alt=""
-                        className="h-[34px] w-auto object-contain"
-                      />
-                    </button>
-                  </div>
-                </div>
-                {renderSectionFollowupCard("picture2")}
-                <ProfileSectionText
-                  title="When I unplug I like to"
-                  body="Read, draw, journal, play guitar or cello, cook?, meditate"
-                  onBeelineClick={() => setOpenBeelineSection("when-i-unplug")}
-                  beelineIconState={getSectionIconState(sectionIconState, "when-i-unplug")}
-                />
-                {renderSectionFollowupCard("when-i-unplug")}
-                <div className="relative w-full">
-                  <img
-                    src="/icons/user_profile_assets/p3.png"
-                    alt=""
-                    className="w-full rounded-2xl object-cover"
-                  />
-                  <div
-                    className="absolute bottom-4 left-0 right-0 flex items-center justify-between"
-                    style={{ paddingLeft: 16, paddingRight: 16 }}
-                  >
-                    <img
-                      src="/icons/compliment section.svg"
-                      alt=""
-                      width={200}
-                      height={52}
-                      className="shrink-0 object-contain"
-                      style={{ width: 200, height: 52, marginLeft: -34 }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setOpenBeelineSection("picture3")}
-                      className="h-[34px] w-auto shrink-0 cursor-pointer border-0 bg-transparent p-0"
-                      aria-label="Beeline"
-                    >
-                      <img
-                        src="/icons/bumble_image_button.svg"
-                        alt=""
-                        className="h-[34px] w-auto object-contain"
-                      />
-                    </button>
-                  </div>
-                </div>
-                {renderSectionFollowupCard("picture3")}
-                <ProfileSectionTags
-                  title="My causes and communities"
-                  tags={[
-                    { label: "Mental health in tech" },
-                    { label: "UX" },
-                    { label: "Digital minimalist" },
-                    { label: "Morning person club" },
-                    { label: "Community gardens" },
-                    { label: "Slow food" },
-                  ]}
-                  onBeelineClick={() => setOpenBeelineSection("my-causes")}
-                  beelineIconState={getSectionIconState(sectionIconState, "my-causes")}
-                />
-                {renderSectionFollowupCard("my-causes")}
-                <ProfileSectionText
-                  title="My favorite quality in a person is"
-                  body="Passion- I love when people have hobbies they're really into or social causes they participate in"
-                  onBeelineClick={() => setOpenBeelineSection("my-favorite-quality")}
-                  beelineIconState={getSectionIconState(sectionIconState, "my-favorite-quality")}
-                />
-                {renderSectionFollowupCard("my-favorite-quality")}
-                <div ref={dogAndLocationRef} className="flex flex-col gap-4">
-                  <div className="relative w-full">
-                    <img
-                      src="/icons/user_profile_assets/p4.png"
-                      alt=""
-                      className="w-full rounded-2xl object-cover"
-                    />
-                    <div
-                      className="absolute bottom-4 left-0 right-0 flex items-center justify-between"
-                      style={{ paddingLeft: 16, paddingRight: 16 }}
-                    >
-                      <img
-                        src="/icons/compliment section.svg"
-                        alt=""
-                        width={200}
-                        height={52}
-                        className="shrink-0 object-contain"
-                        style={{ width: 200, height: 52, marginLeft: -34 }}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setOpenBeelineSection("picture4")}
-                        className="h-[34px] w-auto shrink-0 cursor-pointer border-0 bg-transparent p-0"
-                        aria-label="Beeline"
-                      >
-                        <img
-                          src="/icons/bumble_image_button.svg"
-                          alt=""
-                          className="h-[34px] w-auto object-contain"
-                        />
-                      </button>
-                    </div>
-                  </div>
-                  {renderSectionFollowupCard("picture4")}
-                  <ProfileSectionLocation
-                    location="Boston"
-                    onBeelineClick={() => setOpenBeelineSection("my-location")}
-                    beelineIconState={getSectionIconState(sectionIconState, "my-location")}
-                  />
-                  {renderSectionFollowupCard("my-location")}
-                </div>
-
-                {/* Bottom decision bar (pass / super like / like) - same width as cards, Figma 1068-8451 */}
-                <div className="flex w-full max-w-[24.4375rem] flex-col items-center justify-center gap-2 py-6">
-                  <img
-                    src="/icons/user_profile_assets/bottom decision bar section.svg"
-                    alt="Pass, Super like, Like"
-                    className="h-auto w-full object-contain object-center"
-                  />
-                  <div className="flex flex-col items-center gap-0.5 text-center">
-                    <button
-                      type="button"
-                      className="text-[14px] font-medium text-bumble-black my-6"
-                    >
-                      Block
-                    </button>
-                    <button
-                      type="button"
-                      className="text-[14px] font-medium text-red-600"
-                    >
-                      Report
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Like button overlay - fades out as dog + My location come into view */}
-            <img
-              src="/icons/like button with spacing.svg"
-              alt="Like"
-              className={`absolute bottom-0 right-0 h-auto w-[92px] object-contain object-bottom-right transition-opacity duration-300 ease-out ${likeButtonOpacity > 0 ? "pointer-events-auto" : "pointer-events-none"}`}
-              style={{ opacity: likeButtonOpacity }}
-            />
+              <Settings size={24} strokeWidth={2} />
+            </button>
+            <button
+              type="button"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-bumble-black hover:bg-black/5"
+              aria-label="Help"
+            >
+              <HelpCircle size={24} strokeWidth={2} />
+            </button>
           </div>
         </div>
 
-        <nav className="w-full shrink-0 bg-white">
-          <img
-            src="/icons/bottom navbar.svg"
-            alt="Navigation"
-            className="block w-full object-contain object-bottom"
-          />
-        </nav>
-      </div>
-          </PhoneFrame>
+        {/* Tagline */}
+        <div className="shrink-0 px-[18px] py-2">
+          <p className="text-[16px] leading-[21px] text-bumble-black">
+            Connect over common ground with people who match your vibe,
+            refreshed every day.
+          </p>
         </div>
-        <div className="min-w-[300px] shrink-0 flex-1 flex justify-end">
-          <SwipeExplanationPanel
-          onLeftArrowClick={() => setShowPassScreen(true)}
-          onRightArrowClick={() => setShowMatchScreen(true)}
-        />
+
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+          {/* Beeline notification card */}
+          <div className="shrink-0 px-[10px] py-2">
+            <div className="flex flex-col gap-2 rounded-[10px] bg-bumble-accent p-4">
+              <div className="flex items-center gap-1.5">
+                <img
+                  src="/icons/user_profile_assets/beeline_highlevel_tag.svg"
+                  alt=""
+                  className="h-[27px] w-[95px] object-contain object-left"
+                />
+                <span className="font-semibold italic text-bumble-yellow text-[16px]">
+                  Beeline
+                </span>
+              </div>
+              <p className="font-normal text-[16px] leading-normal text-bumble-black">
+                I did the awkward small talk so you don&apos;t have to. 500
+                chats later, these are the ones worth your time.
+              </p>
+            </div>
+          </div>
+
+          {/* Horizontal discover cards */}
+          <div className="flex gap-[13px] overflow-x-auto px-[10px] pb-4 pt-1 scrollbar-hide">
+            {DISCOVER_CARDS.map((card) => (
+              <div
+                key={card.id}
+                className="flex h-[473px] w-[315px] shrink-0 flex-col gap-3 rounded-[18px] bg-white p-2.5 shadow-[0_0_9px_rgba(0,0,0,0.16)]"
+              >
+                <div className="relative h-[411px] w-full shrink-0 overflow-hidden rounded-[12px]">
+                  <Image
+                    src={card.imageSrc}
+                    alt={`${card.name}, ${card.age}`}
+                    fill
+                    className="object-cover"
+                    sizes="291px"
+                    unoptimized
+                  />
+                </div>
+                <div className="flex items-center justify-between px-0.5">
+                  <div className="flex items-center gap-1">
+                    <span className="text-[16px] font-medium leading-[21px] text-bumble-black">
+                      {card.name}, {card.age}
+                    </span>
+                    {card.verified && (
+                      <BadgeCheck
+                        size={14}
+                        className="shrink-0 text-bumble-gray"
+                        strokeWidth={2}
+                      />
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    className="flex h-[22px] w-6 items-center justify-center text-bumble-black hover:opacity-80"
+                    aria-label="Like"
+                  >
+                    <Heart
+                      size={22}
+                      className="stroke-2"
+                      fill="none"
+                      stroke="currentColor"
+                    />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Similar interests section */}
+          <div className="mt-6 shrink-0">
+            <div className="flex h-[59px] items-center bg-[#f3f3f3] px-[22px] pt-6 pb-2">
+              <p className="text-[20px] font-medium leading-[26px] tracking-[-0.5px] text-bumble-black">
+                Similar interests
+              </p>
+            </div>
+          </div>
         </div>
+
+        <BottomNav activeTab="discover" onTabChange={handleTabChange} />
       </div>
-    </div>
+    </PhoneFrame>
   );
 }

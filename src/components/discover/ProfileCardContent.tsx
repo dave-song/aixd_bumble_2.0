@@ -20,6 +20,8 @@ interface ProfileCardContentProps {
   customHero?: React.ReactNode;
   /** When true, hero (or customHero) is rendered inside the scroll container as first child, matching discover page layout. */
   heroInsideScroll?: boolean;
+  /** Rendered at the top of the scroll area so it scrolls with the rest of the content (e.g. Beeline popover card). */
+  prependToScroll?: React.ReactNode;
   scrollRef?: RefObject<HTMLDivElement | null>;
   dogAndLocationRef?: RefObject<HTMLDivElement | null>;
   onBeelineClick?: (sectionId: BeelineSectionId) => void;
@@ -31,6 +33,7 @@ export function ProfileCardContent({
   profile,
   customHero,
   heroInsideScroll = false,
+  prependToScroll,
   scrollRef,
   dogAndLocationRef,
   onBeelineClick,
@@ -183,6 +186,7 @@ export function ProfileCardContent({
       ref={scrollRef as RefObject<HTMLDivElement>}
       className="profile-scroll flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overflow-x-hidden bg-[#FFFFFF] pb-12 pt-0"
     >
+      {prependToScroll}
       {scrollContent}
     </div>
   );
@@ -205,40 +209,43 @@ function PhotoBlock({
   renderCard: React.ReactNode;
 }) {
   return (
-    <div className="relative w-full">
-      <img src={imageSrc} alt="" className="w-full rounded-2xl object-cover" />
-      <div
-        className="absolute bottom-4 left-0 right-0 flex items-center justify-between"
-        style={{ paddingLeft: 16, paddingRight: 16 }}
-      >
-        <img
-          src="/icons/compliment section.svg"
-          alt=""
-          width={200}
-          height={52}
-          className="shrink-0 object-contain"
-          style={{ width: 200, height: 52, marginLeft: -34 }}
-        />
-        {onBeelineClick ? (
-          <button
-            type="button"
-            onClick={onBeelineClick}
-            className="h-[34px] w-auto shrink-0 cursor-pointer border-0 bg-transparent p-0"
-            aria-label="Beeline"
-          >
+    <div className="flex w-full flex-col gap-3">
+      {/* Image + overlay only: overlay is positioned relative to the image so it stays at bottom of picture when Beeline card expands below */}
+      <div className="relative w-full">
+        <img src={imageSrc} alt="" className="w-full rounded-2xl object-cover" />
+        <div
+          className="absolute bottom-4 left-0 right-0 flex items-center justify-between"
+          style={{ paddingLeft: 16, paddingRight: 16 }}
+        >
+          <img
+            src="/icons/compliment section.svg"
+            alt=""
+            width={200}
+            height={52}
+            className="shrink-0 object-contain"
+            style={{ width: 200, height: 52, marginLeft: -34 }}
+          />
+          {onBeelineClick ? (
+            <button
+              type="button"
+              onClick={onBeelineClick}
+              className="h-[34px] w-auto shrink-0 cursor-pointer border-0 bg-transparent p-0"
+              aria-label="Beeline"
+            >
+              <img
+                src="/icons/bumble_image_button.svg"
+                alt=""
+                className="h-[34px] w-auto object-contain"
+              />
+            </button>
+          ) : (
             <img
               src="/icons/bumble_image_button.svg"
               alt=""
-              className="h-[34px] w-auto object-contain"
+              className="h-[34px] w-auto shrink-0 object-contain"
             />
-          </button>
-        ) : (
-          <img
-            src="/icons/bumble_image_button.svg"
-            alt=""
-            className="h-[34px] w-auto shrink-0 object-contain"
-          />
-        )}
+          )}
+        </div>
       </div>
       {renderCard}
     </div>
