@@ -267,9 +267,9 @@ export default function PeoplePage() {
                 renderSectionFollowupCard={renderSectionFollowupCard}
               />
             </div>
-            {/* Sticky like button: hovers at bottom of viewport when scrolling, overlays bottom of card */}
+            {/* Sticky like button: hovers at bottom of scroll area when scrolling, overlays bottom of card */}
             <div
-              className="sticky bottom-0 z-10 flex h-24 w-full max-w-[411px] -mt-24 shrink-0 items-end justify-end self-center pointer-events-none"
+              className="sticky bottom-0 z-10 flex h-24 w-full max-w-[411px] -mt-24 shrink-0 items-end justify-end self-center pb-1 pointer-events-none"
               aria-hidden
             >
               <img

@@ -7,11 +7,11 @@ export default function NotificationsPage() {
   const router = useRouter();
 
   const handleAllow = () => {
-    router.push("/discover");
+    router.push("/people");
   };
 
   const handleNotNow = () => {
-    router.push("/discover");
+    router.push("/people");
   };
 
   return (

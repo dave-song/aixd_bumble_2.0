@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { BeelineHeaderIcon, StatusBar } from "@/components/layout";
 import { ProfileCardContent } from "@/components/discover/ProfileCardContent";
 import { DISCOVER_PROFILES } from "@/lib/profileData";
@@ -9,32 +10,58 @@ interface PassScreenProps {
 }
 
 /**
- * Pass screen (Figma 1124:17790): same UI structure as Hari's profile on discover,
- * but the profile picture is Elena's (Elena_profile_img.png), no blur or X.
+ * Pass screen (Figma 1124:17790): same UI structure as discover,
+ * but showing Elena's profile (next candidate). Uses ProfileHero for the hero.
+ * Like button fades when user scrolls to end of profile (same as People page).
  */
-function ElenaPassHero() {
-  return (
-    <div className="relative block w-full shrink-0 overflow-hidden rounded-t-2xl">
-      <img
-        src="/icons/user_profile_assets/Elena_profile_img.png"
-        alt="Elena, 28"
-        className="block w-full object-cover object-top"
-        style={{ minHeight: 360 }}
-      />
-      {/* Bottom gradient + text (same as profile hero) */}
-      <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent rounded-t-2xl" />
-      <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-        <h2 className="text-[28px] font-semibold tracking-tight">Elena, 28</h2>
-        <p className="mt-1 text-sm text-white/95">Pediatric Resident</p>
-        <p className="mt-0.5 text-sm text-white/95">Johns Hopkins University</p>
-      </div>
-    </div>
-  );
-}
-
 export function PassScreen({ onClose }: PassScreenProps) {
-  const hariProfile = DISCOVER_PROFILES[0];
-  if (!hariProfile) return null;
+  const elenaProfile = DISCOVER_PROFILES[1];
+  const profileScrollRef = useRef<HTMLDivElement>(null);
+  const dogAndLocationRef = useRef<HTMLDivElement>(null);
+  const [likeButtonOpacity, setLikeButtonOpacity] = useState(1);
+
+  useEffect(() => {
+    const scrollEl = profileScrollRef.current;
+    const triggerEl = dogAndLocationRef.current;
+    if (!scrollEl || !triggerEl) return;
+
+    const updateOpacity = () => {
+      const { scrollTop, clientHeight, scrollHeight } = scrollEl;
+      const canScroll = scrollHeight > clientHeight;
+      if (!canScroll) {
+        setLikeButtonOpacity(1);
+        return;
+      }
+      const atEnd = scrollTop + clientHeight >= scrollHeight - 8;
+      setLikeButtonOpacity(atEnd ? 0 : 1);
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [e] = entries;
+        if (!e) return;
+        const { clientHeight, scrollHeight } = scrollEl;
+        if (scrollHeight <= clientHeight) {
+          setLikeButtonOpacity(1);
+          return;
+        }
+        const atEnd =
+          scrollEl.scrollTop + clientHeight >= scrollHeight - 8;
+        setLikeButtonOpacity(atEnd ? 0 : 1 - Math.min(1, Math.max(0, e.intersectionRatio)));
+      },
+      { root: scrollEl, rootMargin: "0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+
+    scrollEl.addEventListener("scroll", updateOpacity, { passive: true });
+    updateOpacity();
+    observer.observe(triggerEl);
+    return () => {
+      observer.disconnect();
+      scrollEl.removeEventListener("scroll", updateOpacity);
+    };
+  }, []);
+
+  if (!elenaProfile) return null;
 
   return (
     <div
@@ -63,17 +90,19 @@ export function PassScreen({ onClose }: PassScreenProps) {
           style={{ boxSizing: "border-box" }}
         >
           <ProfileCardContent
-            profile={hariProfile}
-            customHero={<ElenaPassHero />}
+            profile={elenaProfile}
             heroInsideScroll
+            scrollRef={profileScrollRef}
+            dogAndLocationRef={dogAndLocationRef}
             renderSectionFollowupCard={() => null}
           />
 
-          {/* Like button overlay - same position as discover */}
+          {/* Like button: fixed to card bottom-right, fades when scrolled to end */}
           <img
             src="/icons/like button with spacing.svg"
             alt="Like"
-            className="absolute bottom-0 right-0 h-auto w-[92px] object-contain object-bottom-right opacity-100 pointer-events-none"
+            className={`absolute bottom-0 right-0 z-10 h-auto w-[92px] object-contain object-bottom-right transition-opacity duration-300 ease-out ${likeButtonOpacity > 0 ? "pointer-events-auto" : "pointer-events-none"}`}
+            style={{ opacity: likeButtonOpacity }}
           />
         </div>
       </div>

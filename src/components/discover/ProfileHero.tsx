@@ -1,6 +1,6 @@
 "use client";
 
-import { Briefcase, Check, GraduationCap, Heart, MessageCircle } from "lucide-react";
+import { Briefcase, Check, GraduationCap } from "lucide-react";
 import type { ProfileHero as ProfileHeroType } from "@/lib/profileData";
 
 interface ProfileHeroProps {
@@ -8,9 +8,16 @@ interface ProfileHeroProps {
   alt: string;
 }
 
-/** Spacing per Figma: padding 1.12rem, gap 0.62rem between elements */
-const OVERLAY_PADDING = "1.12rem";
-const OVERLAY_GAP = "0.62rem";
+/**
+ * Spacing guide (Figma): overlay content block
+ * - Blue 1.12: padding on all sides of the block (top, right, bottom, left)
+ * - Pink 0.62: vertical gap between each element (Photo verified → name → job → school → buttons)
+ */
+const COMPLIMENT_BUTTON_SRC =
+  "/icons/discover_page/" +
+  encodeURIComponent(
+    "📍Final Design (2/18- 2/mobile_flow(hifi_designs)/ios/core_flow/compliment button.png"
+  );
 
 export function ProfileHero({ hero, alt }: ProfileHeroProps) {
   if (hero.type === "composite") {
@@ -24,22 +31,21 @@ export function ProfileHero({ hero, alt }: ProfileHeroProps) {
   }
   const { imageSrc, name, age, job, school, verified } = hero;
   return (
-    <div className="relative block w-full shrink-0 overflow-hidden rounded-t-2xl">
+    <div className="relative block w-full shrink-0 overflow-hidden rounded-t-2xl aspect-9/16 min-h-[420px]">
       <img
         src={imageSrc}
         alt={alt}
-        className="block w-full object-cover object-top"
-        style={{ minHeight: 360 }}
+        className="block size-full object-cover object-top"
       />
-      <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent" />
-      {/* Dark panel with rounded bottom corners – ref: Photo verified pill, name/job/school with icons, Compliment button */}
+      {/* Transparent overlay: only a soft gradient at the bottom so text stays readable over the photo */}
+      <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent pointer-events-none" aria-hidden />
+      {/* Info panel: 1.12rem padding from hero edges (blue) — sets spacing from compliment button to left/bottom of hero; 0.62rem gap between elements (pink) */}
       <div
-        className="absolute bottom-0 left-0 right-0 flex flex-col rounded-b-2xl bg-bumble-black/80 text-white"
-        style={{ padding: OVERLAY_PADDING, gap: OVERLAY_GAP }}
+        className="absolute bottom-0 left-0 right-0 flex flex-col rounded-b-2xl p-[1.12rem] gap-[0.62rem] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.8)]"
       >
         {verified && (
-          <div className="flex w-fit items-center gap-[2px] rounded-[64px] border border-white/40 bg-bumble-black px-[8px] py-[4px]">
-            <div className="flex h-[17px] w-[17px] shrink-0 items-center justify-center rounded-full border border-white/50 bg-white/10">
+          <div className="flex w-fit items-center gap-[2px] rounded-[64px] border border-white/60 bg-black/30 px-[8px] py-[4px] backdrop-blur-sm [box-shadow:0_1px_3px_rgba(0,0,0,0.4)]">
+            <div className="flex h-[17px] w-[17px] shrink-0 items-center justify-center rounded-full border border-white/50 bg-white/20">
               <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />
             </div>
             <span
@@ -74,16 +80,16 @@ export function ProfileHero({ hero, alt }: ProfileHeroProps) {
             {school}
           </span>
         </div>
+        {/* Compliment button: 1.12rem from left/bottom hero edges via container padding above */}
         <button
           type="button"
-          className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-bumble-black bg-bumble-accent shadow-md hover:opacity-95 active:opacity-90"
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-bumble-black bg-bumble-accent shadow-md hover:opacity-95 active:opacity-90 pointer-events-auto"
           aria-label="Compliment"
         >
-          <MessageCircle className="h-6 w-6 text-bumble-black" strokeWidth={2} />
-          <Heart
-            className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 text-white"
-            strokeWidth={2}
-            fill="currentColor"
+          <img
+            src={COMPLIMENT_BUTTON_SRC}
+            alt=""
+            className="h-12 w-12 rounded-full object-contain"
           />
         </button>
       </div>
