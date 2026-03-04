@@ -25,7 +25,7 @@ export default function PeoplePage() {
   const [openBeelineSection, setOpenBeelineSection] =
     useState<BeelineSectionId | null>(null);
   const [sectionIconState, setSectionIconState] = useState<
-    Record<BeelineSectionId, BeelineIconState>
+    Partial<Record<BeelineSectionId, BeelineIconState>>
   >({});
   const [sectionSpilling, setSectionSpilling] = useState(false);
   const [sectionSpillDone, setSectionSpillDone] = useState(false);
