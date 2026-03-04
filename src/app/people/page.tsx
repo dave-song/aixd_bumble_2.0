@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BeelineFollowupCard } from "@/components/beeline/BeelineFollowupCard";
 import { BeelinePopoverCard } from "@/components/beeline/BeelinePopoverCard";
@@ -9,6 +9,9 @@ import { BeelineHeaderIcon, StatusBar } from "@/components/layout";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { PhoneFrame } from "@/components/layout/PhoneFrame";
 import type { BeelineIconState } from "@/components/profile";
+import { MatchScreen } from "@/components/discover/MatchScreen";
+import { PassScreen } from "@/components/discover/PassScreen";
+import { PostMatchChatScreen } from "@/components/discover/PostMatchChatScreen";
 import { ProfileCardContent } from "@/components/discover/ProfileCardContent";
 import { SwipeExplanationPanel } from "@/components/discover/SwipeExplanationPanel";
 import type { BeelineSectionId } from "@/lib/beelineSectionQuestions";
@@ -16,12 +19,16 @@ import { BEELINE_SECTION_QUESTIONS } from "@/lib/beelineSectionQuestions";
 import { DISCOVER_PROFILES } from "@/lib/profileData";
 
 const HARI_PROFILE = DISCOVER_PROFILES[0];
+const OPENING_MOVE_PLACEHOLDER = "What's your ideal first date?";
+const HARI_AVATAR = "/icons/match_process_assets/haris_profile_pic.png";
 
 export default function PeoplePage() {
   const router = useRouter();
   const profileScrollRef = useRef<HTMLDivElement>(null);
   const followupCardRef = useRef<HTMLDivElement>(null);
+  const dogAndLocationRef = useRef<HTMLDivElement>(null);
 
+  const [likeButtonOpacity, setLikeButtonOpacity] = useState(1);
   const [openBeelineSection, setOpenBeelineSection] =
     useState<BeelineSectionId | null>(null);
   const [sectionIconState, setSectionIconState] = useState<
@@ -30,6 +37,82 @@ export default function PeoplePage() {
   const [sectionSpilling, setSectionSpilling] = useState(false);
   const [sectionSpillDone, setSectionSpillDone] = useState(false);
   const [showHeaderBeelineCard, setShowHeaderBeelineCard] = useState(true);
+  const [showMatchScreen, setShowMatchScreen] = useState(false);
+  const [showPassScreen, setShowPassScreen] = useState(false);
+  const [showPostMatchChat, setShowPostMatchChat] = useState(false);
+  const [sentMessage, setSentMessage] = useState("");
+
+  // Keyboard: left = pass, right = match (only when not already on match/post-match)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setShowPassScreen(true);
+      }
+      if (e.key === "ArrowRight" && !showMatchScreen && !showPostMatchChat) {
+        e.preventDefault();
+        setShowMatchScreen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showMatchScreen, showPostMatchChat]);
+
+  // Like button hovers over profile and fades out only when user scrolls to near the end (and content is scrollable)
+  useEffect(() => {
+    const scrollEl = profileScrollRef.current;
+    const triggerEl = dogAndLocationRef.current;
+    if (!scrollEl || !triggerEl) return;
+
+    const updateOpacity = () => {
+      const { scrollTop, clientHeight, scrollHeight } = scrollEl;
+      const canScroll = scrollHeight > clientHeight;
+      if (!canScroll) {
+        setLikeButtonOpacity(1);
+        return;
+      }
+      const atEnd = scrollTop + clientHeight >= scrollHeight - 8;
+      if (atEnd) {
+        setLikeButtonOpacity(0);
+        return;
+      }
+      setLikeButtonOpacity(1);
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [e] = entries;
+        if (!e) return;
+        const { scrollTop, clientHeight, scrollHeight } = scrollEl;
+        const canScroll = scrollHeight > clientHeight;
+        if (!canScroll) {
+          setLikeButtonOpacity(1);
+          return;
+        }
+        const atEnd = scrollTop + clientHeight >= scrollHeight - 8;
+        if (atEnd) {
+          setLikeButtonOpacity(0);
+          return;
+        }
+        const ratio = Math.min(1, Math.max(0, e.intersectionRatio));
+        setLikeButtonOpacity(1 - ratio);
+      },
+      {
+        root: scrollEl,
+        rootMargin: "0px",
+        threshold: [0, 0.25, 0.5, 0.75, 1],
+      }
+    );
+
+    scrollEl.addEventListener("scroll", updateOpacity, { passive: true });
+    // Initial: show button unless content is scrollable and we're already at end
+    updateOpacity();
+    observer.observe(triggerEl);
+    return () => {
+      observer.disconnect();
+      scrollEl.removeEventListener("scroll", updateOpacity);
+    };
+  }, []);
 
   const handleTabChange = (tab: string) => {
     if (tab === "people") return;
@@ -96,7 +179,43 @@ export default function PeoplePage() {
       {/* Left spacer: equal to right side so phone is visually centered */}
       <div className="flex-1 min-w-0 shrink" aria-hidden />
       <PhoneFrame>
-        <div className="flex h-full w-full flex-col bg-white">
+        <div className="relative flex h-full w-full flex-col bg-white">
+          {/* Match flow overlays */}
+          {showMatchScreen && (
+            <div className="absolute inset-0 z-50 flex flex-col bg-white">
+              <MatchScreen
+                matchedProfileId="hari"
+                matchedProfileName="Hari"
+                openingMovePlaceholder={OPENING_MOVE_PLACEHOLDER}
+                onClose={() => setShowMatchScreen(false)}
+                onSendMessage={(text) => {
+                  setSentMessage(text);
+                  setShowMatchScreen(false);
+                  setShowPostMatchChat(true);
+                }}
+              />
+            </div>
+          )}
+          {showPostMatchChat && (
+            <div className="absolute inset-0 z-50 flex flex-col bg-white">
+              <PostMatchChatScreen
+                matchedProfileName="Hari"
+                avatarSrc={HARI_AVATAR}
+                openingMoveText={OPENING_MOVE_PLACEHOLDER}
+                sentMessage={sentMessage}
+                onClose={() => {
+                  setShowPostMatchChat(false);
+                  router.push("/chats");
+                }}
+              />
+            </div>
+          )}
+          {showPassScreen && (
+            <div className="absolute inset-0 z-50 flex flex-col bg-white">
+              <PassScreen onClose={() => setShowPassScreen(false)} />
+            </div>
+          )}
+
           <StatusBar />
 
           <header className="relative flex w-full shrink-0 items-center justify-center bg-white">
@@ -125,7 +244,7 @@ export default function PeoplePage() {
             </div>
           )}
 
-          {/* Single scroll: Beeline card (outside) + profile card. Beeline scrolls with the page but is not inside the profile's scroll. */}
+          {/* Single scroll: Beeline card (outside) + profile card. Like button is sticky so it hovers at bottom. */}
           <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden w-full">
             {showHeaderBeelineCard && (
               <div className="shrink-0 flex justify-center px-4 pt-2 pb-2">
@@ -142,15 +261,22 @@ export default function PeoplePage() {
                 profile={HARI_PROFILE}
                 heroInsideScroll
                 scrollRef={profileScrollRef}
+                dogAndLocationRef={dogAndLocationRef}
                 onBeelineClick={handleBeelineClick}
                 getBeelineIconState={(id) => sectionIconState[id] ?? "default"}
                 renderSectionFollowupCard={renderSectionFollowupCard}
               />
-
+            </div>
+            {/* Sticky like button: hovers at bottom of viewport when scrolling, overlays bottom of card */}
+            <div
+              className="sticky bottom-0 z-10 flex h-24 w-full max-w-[411px] -mt-24 shrink-0 items-end justify-end self-center pointer-events-none"
+              aria-hidden
+            >
               <img
                 src="/icons/like button with spacing.svg"
                 alt="Like"
-                className="absolute bottom-0 right-0 h-auto w-[92px] object-contain object-bottom-right pointer-events-none"
+                className={`h-auto w-[92px] object-contain object-bottom-right transition-opacity duration-300 ease-out ${likeButtonOpacity > 0 ? "pointer-events-auto" : "pointer-events-none"}`}
+                style={{ opacity: likeButtonOpacity }}
               />
             </div>
           </div>
@@ -164,8 +290,10 @@ export default function PeoplePage() {
       {/* Right side: panel immediately to the right of the phone */}
       <div className="flex flex-1 min-w-0 items-center justify-start pl-4">
         <SwipeExplanationPanel
-          onLeftArrowClick={() => {}}
-          onRightArrowClick={() => {}}
+          onLeftArrowClick={() => setShowPassScreen(true)}
+          onRightArrowClick={() => {
+            if (!showMatchScreen && !showPostMatchChat) setShowMatchScreen(true);
+          }}
         />
       </div>
     </div>

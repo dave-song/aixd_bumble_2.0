@@ -33,11 +33,11 @@ const LIKED_CARDS = [
     imageSrc: "/icons/liked_page_assets/liked_card_min.png",
   },
   {
-    id: "hari",
-    name: "Hari",
-    age: 27,
-    job: "Project Manager at Tech",
-    school: "Carnegie Mellon",
+    id: "mina",
+    name: "Mina",
+    age: 22,
+    job: "Product Designer @ Meta",
+    school: "RISD",
     imageSrc: "/icons/liked_page_assets/liked_card_hari.png",
   },
 ] as const;

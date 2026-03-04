@@ -12,14 +12,14 @@ const DISCOVER_CARDS = [
     id: "maya",
     name: "Maya",
     age: 26,
-    imageSrc: "/icons/user_profile_assets/p1.png",
+    imageSrc: "/icons/discover_page/person1.png",
     verified: true,
   },
   {
     id: "elena",
     name: "Elena",
     age: 28,
-    imageSrc: "/icons/user_profile_assets/Elena_profile_img.png",
+    imageSrc: "/icons/discover_page/person 2.png",
     verified: true,
   },
 ] as const;
@@ -65,7 +65,7 @@ export default function DiscoverPage() {
 
         {/* Tagline */}
         <div className="shrink-0 px-[18px] py-2">
-          <p className="text-[16px] leading-[21px] text-bumble-black">
+          <p className="text-[16px] leading-[21px] text-bumble-gray">
             Connect over common ground with people who match your vibe,
             refreshed every day.
           </p>
@@ -92,14 +92,15 @@ export default function DiscoverPage() {
             </div>
           </div>
 
-          {/* Horizontal discover cards */}
-          <div className="flex gap-[13px] overflow-x-auto px-[10px] pb-4 pt-1 scrollbar-hide">
+          {/* Horizontal discover cards (Figma 1265-26569) – full width scroll, snap to card */}
+          <div className="w-full overflow-x-auto overflow-y-visible scroll-smooth scrollbar-hide px-[10px] pb-[10px] pt-5 snap-x snap-mandatory">
+            <div className="flex w-max min-w-full gap-[13px] items-end justify-start pr-[10px]">
             {DISCOVER_CARDS.map((card) => (
               <div
                 key={card.id}
-                className="flex h-[473px] w-[315px] shrink-0 flex-col gap-3 rounded-[18px] bg-white p-2.5 shadow-[0_0_9px_rgba(0,0,0,0.16)]"
+                className="flex h-[473px] w-[315px] shrink-0 snap-start flex-col items-center gap-[12px] rounded-[18px] bg-white px-[10px] py-[12px] shadow-[0_0_9px_rgba(0,0,0,0.16)]"
               >
-                <div className="relative h-[411px] w-full shrink-0 overflow-hidden rounded-[12px]">
+                <div className="relative h-[411px] w-[291px] shrink-0 overflow-hidden rounded-[12px]">
                   <Image
                     src={card.imageSrc}
                     alt={`${card.name}, ${card.age}`}
@@ -109,7 +110,7 @@ export default function DiscoverPage() {
                     unoptimized
                   />
                 </div>
-                <div className="flex items-center justify-between px-0.5">
+                <div className="flex w-[291px] items-start justify-between">
                   <div className="flex items-center gap-1">
                     <span className="text-[16px] font-medium leading-[21px] text-bumble-black">
                       {card.name}, {card.age}
@@ -124,7 +125,7 @@ export default function DiscoverPage() {
                   </div>
                   <button
                     type="button"
-                    className="flex h-[22px] w-6 items-center justify-center text-bumble-black hover:opacity-80"
+                    className="flex h-[22px] w-[25px] shrink-0 items-center justify-center text-bumble-black hover:opacity-80"
                     aria-label="Like"
                   >
                     <Heart
@@ -137,6 +138,7 @@ export default function DiscoverPage() {
                 </div>
               </div>
             ))}
+            </div>
           </div>
 
           {/* Similar interests section */}
