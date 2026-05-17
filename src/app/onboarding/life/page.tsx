@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PhoneFrame, StatusBar } from "@/components/layout";
+import { useOnboardingEnter } from "@/lib/useOnboardingEnter";
 
 const MAX_SELECTIONS = 3;
 
@@ -54,13 +55,15 @@ export default function LifePage() {
     }
   };
 
-  const handleContinue = () => {
+  const handleContinue = useCallback(() => {
     router.push("/onboarding/interests");
-  };
+  }, [router]);
+
+  useOnboardingEnter(handleContinue);
 
   return (
     <PhoneFrame>
-      <div className="relative w-full h-full bg-white flex flex-col">
+      <div className="relative flex h-full w-full flex-col overflow-hidden bg-white">
         <StatusBar />
 
         {/* Progress Bar - ~1/3 filled black, rest light grey */}
@@ -72,7 +75,7 @@ export default function LifePage() {
             aria-label="Go back"
           />
           <div className="relative flex-1 h-[3px] bg-[#D2D2D2] rounded-full">
-            <div className="absolute left-0 top-0 h-full w-[33.333%] bg-black rounded-full" />
+            <div className="absolute left-0 top-0 h-full w-[38%] bg-black rounded-full" />
           </div>
         </div>
 

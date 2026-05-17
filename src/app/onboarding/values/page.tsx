@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PhoneFrame, StatusBar } from "@/components/layout";
+import { useOnboardingEnter } from "@/lib/useOnboardingEnter";
 import { Plus, X } from "lucide-react";
 
 const MAX_SELECTIONS = 3;
@@ -40,17 +41,19 @@ export default function ValuesPage() {
     }
   };
 
-  const handleContinue = () => {
+  const handleContinue = useCallback(() => {
     router.push("/onboarding/notifications");
-  };
+  }, [router]);
 
-  const handleSkip = () => {
+  const handleSkip = useCallback(() => {
     router.push("/onboarding/notifications");
-  };
+  }, [router]);
+
+  useOnboardingEnter(handleContinue, selected.length > 0);
 
   return (
     <PhoneFrame>
-      <div className="relative w-full h-full bg-white flex flex-col">
+      <div className="relative flex h-full w-full flex-col overflow-hidden bg-white">
         <StatusBar />
 
         {/* Progress Bar; tap left side to go back */}

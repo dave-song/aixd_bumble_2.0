@@ -141,7 +141,18 @@ export default function ChatsPage() {
                 </p>
               </div>
             </div>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-bumble-black" aria-hidden>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="shrink-0 text-bumble-black"
+              aria-hidden
+            >
               <path d="M9 18l6-6-6-6" />
             </svg>
           </Link>

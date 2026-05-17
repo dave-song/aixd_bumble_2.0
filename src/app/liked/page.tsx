@@ -13,7 +13,8 @@ import { BottomNav } from "@/components/layout/BottomNav";
 import { PhoneFrame } from "@/components/layout/PhoneFrame";
 
 const BEELINE_SPARKLE_ICON = "/icons/beeline-sparkle.svg";
-const BEELINE_VETTED_ICON = "/icons/liked_page_assets/beeline_vetted_chip_icon.svg";
+const BEELINE_VETTED_ICON =
+  "/icons/liked_page_assets/beeline_vetted_chip_icon.svg";
 
 const FILTER_CHIPS = [
   { label: "All", count: 9, active: false },
@@ -117,7 +118,10 @@ export default function LikedPage() {
                     />
                   )}
                   <span>{chip.label}</span>
-                  <span aria-hidden className="h-1 w-1 rounded-full bg-current" />
+                  <span
+                    aria-hidden
+                    className="h-1 w-1 rounded-full bg-current"
+                  />
                   <span>{chip.count}</span>
                 </button>
               ))}
@@ -128,14 +132,14 @@ export default function LikedPage() {
             {LIKED_CARDS.map((card) => (
               <div
                 key={card.id}
-                className="relative h-[476px] w-full overflow-hidden rounded-[18px]"
+                className="relative h-[432px] w-full overflow-hidden rounded-[18px]"
               >
                 <Image
                   src={card.imageSrc}
                   alt={`${card.name}, ${card.age}`}
                   fill
                   className="object-cover"
-                  sizes="410px"
+                  sizes="372px"
                   unoptimized
                 />
                 <div className="absolute inset-x-0 bottom-0 h-44 bg-linear-to-t from-black/45 via-black/15 to-transparent" />

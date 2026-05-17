@@ -95,49 +95,49 @@ export default function DiscoverPage() {
           {/* Horizontal discover cards (Figma 1265-26569) – full width scroll, snap to card */}
           <div className="w-full overflow-x-auto overflow-y-visible scroll-smooth scrollbar-hide px-[10px] pb-[10px] pt-5 snap-x snap-mandatory">
             <div className="flex w-max min-w-full gap-[13px] items-end justify-start pr-[10px]">
-            {DISCOVER_CARDS.map((card) => (
-              <div
-                key={card.id}
-                className="flex h-[473px] w-[315px] shrink-0 snap-start flex-col items-center gap-[12px] rounded-[18px] bg-white px-[10px] py-[12px] shadow-[0_0_9px_rgba(0,0,0,0.16)]"
-              >
-                <div className="relative h-[411px] w-[291px] shrink-0 overflow-hidden rounded-[12px]">
-                  <Image
-                    src={card.imageSrc}
-                    alt={`${card.name}, ${card.age}`}
-                    fill
-                    className="object-cover"
-                    sizes="291px"
-                    unoptimized
-                  />
-                </div>
-                <div className="flex w-[291px] items-start justify-between">
-                  <div className="flex items-center gap-1">
-                    <span className="text-[16px] font-medium leading-[21px] text-bumble-black">
-                      {card.name}, {card.age}
-                    </span>
-                    {card.verified && (
-                      <BadgeCheck
-                        size={14}
-                        className="shrink-0 text-bumble-gray"
-                        strokeWidth={2}
-                      />
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    className="flex h-[22px] w-[25px] shrink-0 items-center justify-center text-bumble-black hover:opacity-80"
-                    aria-label="Like"
-                  >
-                    <Heart
-                      size={22}
-                      className="stroke-2"
-                      fill="none"
-                      stroke="currentColor"
+              {DISCOVER_CARDS.map((card) => (
+                <div
+                  key={card.id}
+                  className="flex h-[429px] w-[286px] shrink-0 snap-start flex-col items-center gap-[11px] rounded-[18px] bg-white px-[10px] py-[11px] shadow-[0_0_9px_rgba(0,0,0,0.16)]"
+                >
+                  <div className="relative h-[373px] w-[264px] shrink-0 overflow-hidden rounded-[12px]">
+                    <Image
+                      src={card.imageSrc}
+                      alt={`${card.name}, ${card.age}`}
+                      fill
+                      className="object-cover"
+                      sizes="264px"
+                      unoptimized
                     />
-                  </button>
+                  </div>
+                  <div className="flex w-[264px] items-start justify-between">
+                    <div className="flex items-center gap-1">
+                      <span className="text-[16px] font-medium leading-[21px] text-bumble-black">
+                        {card.name}, {card.age}
+                      </span>
+                      {card.verified && (
+                        <BadgeCheck
+                          size={14}
+                          className="shrink-0 text-bumble-gray"
+                          strokeWidth={2}
+                        />
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      className="flex h-[22px] w-[25px] shrink-0 items-center justify-center text-bumble-black hover:opacity-80"
+                      aria-label="Like"
+                    >
+                      <Heart
+                        size={22}
+                        className="stroke-2"
+                        fill="none"
+                        stroke="currentColor"
+                      />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
             </div>
           </div>
 

@@ -33,7 +33,7 @@ export default function ChatDetailPage() {
 
   return (
     <PhoneFrame>
-      <div className="flex h-full w-full flex-col bg-white">
+      <div className="flex h-full w-full flex-col overflow-hidden bg-white">
         <StatusBar />
         <div className="flex shrink-0 items-center justify-between border-b border-[#e4e4e4] bg-white pl-[22px] pr-[17px] py-3">
           <div className="flex items-center gap-4">

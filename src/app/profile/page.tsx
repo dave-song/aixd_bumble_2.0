@@ -7,9 +7,11 @@ import { StatusBar } from "@/components/layout";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { PhoneFrame } from "@/components/layout/PhoneFrame";
 
-const PROFILE_IMAGE = "/icons/profile_page_assets/user profile building card.png";
+const PROFILE_IMAGE =
+  "/icons/profile_page_assets/user profile building card.png";
 const BEELINE_ICON = "/icons/profile_page_assets/beeline_icon.png";
-const INSIGHTS_CARD_IMAGE = "/icons/profile_page_assets/insights card pending.png";
+const INSIGHTS_CARD_IMAGE =
+  "/icons/profile_page_assets/insights card pending.png";
 const TIME_ICON = "/icons/profile_page_assets/time_icon.png";
 
 export default function ProfilePage() {
@@ -54,13 +56,13 @@ export default function ProfilePage() {
         <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
           {/* User profile card – single image with everything (no overlay elements) */}
           <div className="shrink-0 px-[10px] pt-[8px] pb-[16px]">
-            <div className="relative h-[378px] w-full max-w-[410px] overflow-hidden rounded-[18px]">
+            <div className="relative h-[343px] w-full max-w-[372px] overflow-hidden rounded-[18px]">
               <Image
                 src={PROFILE_IMAGE}
                 alt=""
                 fill
                 className="object-cover object-top"
-                sizes="410px"
+                sizes="372px"
                 unoptimized
               />
             </div>
@@ -105,7 +107,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Beeline alert CTA (Figma 1273-32055) */}
-            <div className="w-full max-w-[410px]">
+            <div className="w-full max-w-[372px]">
               <div className="flex items-center justify-between rounded-[18px] bg-[#f2f3f3] px-[15px] py-[12px]">
                 <div className="flex items-center gap-[10px]">
                   <div className="relative h-[25px] w-[25px] shrink-0">
@@ -122,22 +124,27 @@ export default function ProfilePage() {
                       Spill the tea so I can find &quot;The One&quot;
                     </p>
                     <p className="text-[13px] font-medium leading-tight text-bumble-black/80">
-                      I&apos;ve got your basics, but I&apos;m still guessing on your vibe.
+                      I&apos;ve got your basics, but I&apos;m still guessing on
+                      your vibe.
                     </p>
                   </div>
                 </div>
-                <ChevronRight size={32} className="shrink-0 text-bumble-black" strokeWidth={1.5} />
+                <ChevronRight
+                  size={32}
+                  className="shrink-0 text-bumble-black"
+                  strokeWidth={1.5}
+                />
               </div>
             </div>
 
             {/* Insights card pending (Figma 1273-32066) */}
-            <div className="relative flex h-[339px] w-full max-w-[410px] flex-col justify-between overflow-hidden rounded-[18px] p-[18px]">
+            <div className="relative flex h-[307px] w-full max-w-[372px] flex-col justify-between overflow-hidden rounded-[18px] p-[18px]">
               <Image
                 src={INSIGHTS_CARD_IMAGE}
                 alt=""
                 fill
                 className="object-cover object-center"
-                sizes="410px"
+                sizes="372px"
                 unoptimized
               />
               <div className="relative z-10 flex flex-1 min-h-0 flex-col justify-between gap-4">
@@ -156,9 +163,9 @@ export default function ProfilePage() {
                   </p>
                   <p className="text-[16px] font-medium leading-[21px] tracking-[-0.38px] text-white drop-shadow-sm">
                     I&apos;m busy turning your static profile to a{" "}
-                    <span className="font-bold">living one</span>. Once I&apos;ve had
-                    enough conversations with you in the feed, your insights will
-                    appear here.
+                    <span className="font-bold">living one</span>. Once
+                    I&apos;ve had enough conversations with you in the feed,
+                    your insights will appear here.
                   </p>
                 </div>
                 <button

@@ -8,24 +8,16 @@ interface PhoneFrameProps {
   className?: string;
 }
 
+/** Fixed 390×844 viewport for portfolio iframe embed */
 export function PhoneFrame({ children, className = "" }: PhoneFrameProps) {
   return (
-    <div 
-      className="min-h-screen flex items-center justify-center"
-      style={{ backgroundColor: "#444444" }}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className={`relative h-[844px] w-[390px] max-h-[844px] max-w-[390px] overflow-hidden bg-white ${className}`}
     >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        className={`relative bg-white overflow-hidden ${className}`}
-        style={{
-          width: "430px",
-          height: "932px",
-        }}
-      >
-        {children}
-      </motion.div>
-    </div>
+      {children}
+    </motion.div>
   );
 }

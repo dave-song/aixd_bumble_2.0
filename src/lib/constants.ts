@@ -9,12 +9,36 @@ export const colors = {
   bumbleWhite: "#ffffff",
 } as const;
 
-// Frame dimensions (iPhone 14 Pro Max)
+// Frame dimensions (portfolio iframe: iPhone 14/15 logical size)
 export const dimensions = {
-  frameWidth: 430,
-  frameHeight: 932,
+  frameWidth: 390,
+  frameHeight: 844,
   statusBarHeight: 60,
   bottomNavHeight: 83,
+} as const;
+
+/** Layout was originally tuned for ~430px-wide PhoneFrame */
+export const LEGACY_FRAME_WIDTH = 430;
+
+/** Scale legacy pixel values to the locked 390px viewport */
+export function scalePx(px: number): number {
+  return Math.round(px * (dimensions.frameWidth / LEGACY_FRAME_WIDTH));
+}
+
+/** Common scaled sizes (411→373, 512→flex, etc.) */
+export const scaled = {
+  profileCardWidth: scalePx(411),
+  likeButtonWidth: scalePx(92),
+  headerBeelineRight: scalePx(52),
+  discoverCardWidth: scalePx(315),
+  discoverCardHeight: scalePx(473),
+  discoverPhotoWidth: scalePx(291),
+  discoverPhotoHeight: scalePx(411),
+  profileHeroMinHeight: scalePx(420),
+  likedCardHeight: scalePx(476),
+  profileSectionMaxWidth: scalePx(410),
+  profileHeroHeight: scalePx(378),
+  profileAdviceHeight: scalePx(339),
 } as const;
 
 // Mock profile data

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  width: "device-width",
+  width: 390,
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
@@ -27,7 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${plusJakarta.variable} font-sans antialiased`}>
+      <body
+        className={`${plusJakarta.variable} font-sans antialiased app-prototype-root`}
+      >
         {children}
       </body>
     </html>

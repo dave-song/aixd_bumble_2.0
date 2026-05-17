@@ -31,7 +31,7 @@ export function ProfileHero({ hero, alt }: ProfileHeroProps) {
   }
   const { imageSrc, name, age, job, school, verified } = hero;
   return (
-    <div className="relative block w-full shrink-0 overflow-hidden rounded-t-2xl aspect-9/16 min-h-[420px]">
+    <div className="relative block w-full shrink-0 overflow-hidden rounded-t-2xl aspect-9/16 min-h-[381px]">
       <img
         src={imageSrc}
         alt={alt}

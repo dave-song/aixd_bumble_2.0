@@ -16,9 +16,37 @@
   /* Font Family */
   --font-sans: "Euclid Circular A", "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
   
-  /* Frame Dimensions (iPhone 14 Pro Max) */
-  --frame-width: 430px;
-  --frame-height: 932px;
+  /* Portfolio iframe: iPhone 14/15 logical viewport */
+  --frame-width: 390px;
+  --frame-height: 844px;
+  /* Content sized for legacy 430px frame, scaled to 390px */
+  --legacy-frame-width: 430;
+  --content-scale: calc(var(--frame-width) / var(--legacy-frame-width));
+  --profile-card-width: 373px;
+  --content-inset-x: 10px;
+  --like-button-width: 83px;
+}
+
+/* Lock document to embed viewport (390×844) */
+html,
+body {
+  width: 390px;
+  height: 844px;
+  max-width: 390px;
+  max-height: 844px;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+#__next,
+.app-prototype-root {
+  width: 390px;
+  height: 844px;
+  max-width: 390px;
+  max-height: 844px;
+  overflow: hidden;
+  margin: 0;
 }
 
 /* Custom scrollbar for profile cards */
@@ -30,7 +58,16 @@
   display: none;
 }
 
-/* Force scrollbar hidden on profile scroll so content fills full 410px */
+/* Profile card: full width within frame minus horizontal inset */
+.proto-profile-card {
+  box-sizing: border-box;
+  width: min(var(--profile-card-width), calc(100% - 2 * var(--content-inset-x)));
+  max-width: var(--profile-card-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Force scrollbar hidden on profile scroll so content fills full width */
 .profile-scroll {
   -ms-overflow-style: none !important;
   scrollbar-width: none !important;

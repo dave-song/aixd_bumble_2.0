@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PhoneFrame, StatusBar } from "@/components/layout";
+import { useOnboardingEnter } from "@/lib/useOnboardingEnter";
 
 export default function NamePage() {
   const router = useRouter();
@@ -15,16 +16,18 @@ export default function NamePage() {
     return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
   }
 
-  const handleContinue = () => {
+  const handleContinue = useCallback(() => {
     if (name.trim()) {
       localStorage.setItem("userName", formatName(name));
       router.push("/onboarding/gender");
     }
-  };
+  }, [name, router]);
+
+  useOnboardingEnter(handleContinue, Boolean(name.trim()));
 
   return (
     <PhoneFrame>
-      <div className="relative w-full h-full bg-white flex flex-col">
+      <div className="relative flex h-full w-full flex-col overflow-hidden bg-white">
         <StatusBar />
 
         {/* Progress Bar - tap left side to go back */}
@@ -53,6 +56,12 @@ export default function NamePage() {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleContinue();
+              }
+            }}
             placeholder="Enter your name"
             className="w-full py-[16px] px-[20px] rounded-[12px] bg-[#F5F5F5] text-[16px] text-bumble-black placeholder:text-neutral-400 outline-none focus:ring-2 focus:ring-bumble-accent"
             autoFocus

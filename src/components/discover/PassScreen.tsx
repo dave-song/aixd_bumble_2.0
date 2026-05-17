@@ -45,11 +45,12 @@ export function PassScreen({ onClose }: PassScreenProps) {
           setLikeButtonOpacity(1);
           return;
         }
-        const atEnd =
-          scrollEl.scrollTop + clientHeight >= scrollHeight - 8;
-        setLikeButtonOpacity(atEnd ? 0 : 1 - Math.min(1, Math.max(0, e.intersectionRatio)));
+        const atEnd = scrollEl.scrollTop + clientHeight >= scrollHeight - 8;
+        setLikeButtonOpacity(
+          atEnd ? 0 : 1 - Math.min(1, Math.max(0, e.intersectionRatio)),
+        );
       },
-      { root: scrollEl, rootMargin: "0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
+      { root: scrollEl, rootMargin: "0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
     );
 
     scrollEl.addEventListener("scroll", updateOpacity, { passive: true });
@@ -77,18 +78,15 @@ export function PassScreen({ onClose }: PassScreenProps) {
           className="h-[42px] w-full shrink-0 object-contain object-left"
         />
         <div
-          className="absolute right-[52px] top-1/2 flex h-[42px] -translate-y-1/2 items-center justify-center"
+          className="absolute right-[47px] top-1/2 flex h-[42px] -translate-y-1/2 items-center justify-center"
           aria-hidden
         >
           <BeelineHeaderIcon className="h-9 w-9" isActive={false} />
         </div>
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col items-center bg-white pb-4">
-        <div
-          className="relative flex h-full min-h-[512px] w-[411px] min-w-[411px] max-w-[411px] flex-col overflow-hidden rounded-[18px] bg-[#FFFFFF] shadow-[0_0_12px_0_rgba(0,0,0,0.25)]"
-          style={{ boxSizing: "border-box" }}
-        >
+      <div className="flex min-h-0 flex-1 flex-col items-center overflow-hidden bg-white px-[var(--content-inset-x)]">
+        <div className="proto-profile-card relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-[18px] bg-[#FFFFFF] shadow-[0_0_12px_0_rgba(0,0,0,0.25)]">
           <ProfileCardContent
             profile={elenaProfile}
             heroInsideScroll
@@ -101,7 +99,7 @@ export function PassScreen({ onClose }: PassScreenProps) {
           <img
             src="/icons/like button with spacing.svg"
             alt="Like"
-            className={`absolute bottom-0 right-0 z-10 h-auto w-[92px] object-contain object-bottom-right transition-opacity duration-300 ease-out ${likeButtonOpacity > 0 ? "pointer-events-auto" : "pointer-events-none"}`}
+            className={`absolute bottom-0 right-0 z-10 h-auto w-[var(--like-button-width)] object-contain object-bottom-right transition-opacity duration-300 ease-out ${likeButtonOpacity > 0 ? "pointer-events-auto" : "pointer-events-none"}`}
             style={{ opacity: likeButtonOpacity }}
           />
         </div>

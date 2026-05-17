@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PhoneFrame, StatusBar } from "@/components/layout";
+import { useOnboardingEnter } from "@/lib/useOnboardingEnter";
 import { Search } from "lucide-react";
 
 const MAX_SELECTIONS = 5;
@@ -41,13 +42,15 @@ export default function InterestsPage() {
     }
   };
 
-  const handleContinue = () => {
+  const handleContinue = useCallback(() => {
     router.push("/onboarding/values");
-  };
+  }, [router]);
 
-  const handleSkip = () => {
+  const handleSkip = useCallback(() => {
     router.push("/onboarding/values");
-  };
+  }, [router]);
+
+  useOnboardingEnter(handleContinue);
 
   const filteredInterests = interests.filter((interest) =>
     interest.label.toLowerCase().includes(searchQuery.toLowerCase())
@@ -55,7 +58,7 @@ export default function InterestsPage() {
 
   return (
     <PhoneFrame>
-      <div className="relative w-full h-full bg-white flex flex-col">
+      <div className="relative flex h-full w-full flex-col overflow-hidden bg-white">
         <StatusBar />
 
         {/* Progress Bar - 4th step; tap left side to go back */}
@@ -88,6 +91,12 @@ export default function InterestsPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleContinue();
+                }
+              }}
               placeholder="What are you into?"
               className="flex-1 bg-transparent text-[16px] text-bumble-black placeholder:text-bumble-gray outline-none"
             />

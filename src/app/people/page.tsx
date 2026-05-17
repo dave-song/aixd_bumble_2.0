@@ -13,7 +13,6 @@ import { MatchScreen } from "@/components/discover/MatchScreen";
 import { PassScreen } from "@/components/discover/PassScreen";
 import { PostMatchChatScreen } from "@/components/discover/PostMatchChatScreen";
 import { ProfileCardContent } from "@/components/discover/ProfileCardContent";
-import { SwipeExplanationPanel } from "@/components/discover/SwipeExplanationPanel";
 import type { BeelineSectionId } from "@/lib/beelineSectionQuestions";
 import { BEELINE_SECTION_QUESTIONS } from "@/lib/beelineSectionQuestions";
 import { DISCOVER_PROFILES } from "@/lib/profileData";
@@ -101,7 +100,7 @@ export default function PeoplePage() {
         root: scrollEl,
         rootMargin: "0px",
         threshold: [0, 0.25, 0.5, 0.75, 1],
-      }
+      },
     );
 
     scrollEl.addEventListener("scroll", updateOpacity, { passive: true });
@@ -126,10 +125,11 @@ export default function PeoplePage() {
     setOpenBeelineSection((prev) => (prev === sectionId ? null : sectionId));
   };
 
-  const handleFollowupAnswer = (sectionId: BeelineSectionId) => (answer: "yes" | "no") => {
-    setSectionIconState((prev) => ({ ...prev, [sectionId]: answer }));
-    setOpenBeelineSection(null);
-  };
+  const handleFollowupAnswer =
+    (sectionId: BeelineSectionId) => (answer: "yes" | "no") => {
+      setSectionIconState((prev) => ({ ...prev, [sectionId]: answer }));
+      setOpenBeelineSection(null);
+    };
 
   const handleFollowupSpillDone = (sectionId: BeelineSectionId) => () => {
     setSectionIconState((prev) => ({ ...prev, [sectionId]: "spill-done" }));
@@ -138,7 +138,8 @@ export default function PeoplePage() {
     setSectionSpillDone(false);
   };
 
-  const handleSpillingStateChange = (sectionId: BeelineSectionId) =>
+  const handleSpillingStateChange =
+    (sectionId: BeelineSectionId) =>
     (isSpilling: boolean, isSpillDone: boolean) => {
       setSectionSpilling(isSpilling);
       setSectionSpillDone(isSpillDone);
@@ -175,11 +176,8 @@ export default function PeoplePage() {
   if (!HARI_PROFILE) return null;
 
   return (
-    <div className="flex min-h-screen min-w-0 items-center bg-[#444444]">
-      {/* Left spacer: equal to right side so phone is visually centered */}
-      <div className="flex-1 min-w-0 shrink" aria-hidden />
-      <PhoneFrame>
-        <div className="relative flex h-full w-full flex-col bg-white">
+    <PhoneFrame>
+      <div className="relative flex h-full w-full flex-col bg-white">
           {/* Match flow overlays */}
           {showMatchScreen && (
             <div className="absolute inset-0 z-50 flex flex-col bg-white">
@@ -219,83 +217,62 @@ export default function PeoplePage() {
           <StatusBar />
 
           <header className="relative flex w-full shrink-0 items-center justify-center bg-white">
-          <img
-            src="/icons/bumble-top-header-no-bee.svg"
-            alt="Bumble"
-            className="h-[42px] w-full shrink-0 object-contain object-left"
-          />
-          <div
-            className="absolute right-[52px] top-1/2 flex h-[42px] -translate-y-1/2 items-center justify-center"
-            aria-hidden={false}
-          >
-            <BeelineHeaderIcon
-              className="h-9 w-9"
-              isActive={showHeaderBeelineCard}
-              onClick={() => setShowHeaderBeelineCard((prev) => !prev)}
+            <img
+              src="/icons/bumble-top-header-no-bee.svg"
+              alt="Bumble"
+              className="h-[42px] w-full shrink-0 object-contain object-left"
             />
-          </div>
+            <div
+              className="absolute right-[47px] top-1/2 flex h-[42px] -translate-y-1/2 items-center justify-center"
+              aria-hidden={false}
+            >
+              <BeelineHeaderIcon
+                className="h-9 w-9"
+                isActive={showHeaderBeelineCard}
+                onClick={() => setShowHeaderBeelineCard((prev) => !prev)}
+              />
+            </div>
           </header>
 
-          <div className="relative flex min-h-0 flex-1 flex-col items-center bg-white pb-4">
-          {/* Voice wave pill when spilling the tea (card may have scrolled out of view) */}
-          {showVoiceWave && (
-            <div className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2">
-              <VoiceWaveUI />
-            </div>
-          )}
+          <div className="relative flex min-h-0 flex-1 flex-col items-center overflow-hidden bg-white px-[var(--content-inset-x)]">
+            {/* Voice wave pill when spilling the tea (card may have scrolled out of view) */}
+            {showVoiceWave && (
+              <div className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2">
+                <VoiceWaveUI />
+              </div>
+            )}
 
-          {/* Single scroll: Beeline card (outside) + profile card. Like button is sticky so it hovers at bottom. */}
-          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden w-full">
             {showHeaderBeelineCard && (
-              <div className="shrink-0 flex justify-center px-4 pt-2 pb-2">
+              <div className="proto-profile-card w-full shrink-0 pt-2 pb-2">
                 <BeelinePopoverCard
                   onClose={() => setShowHeaderBeelineCard(false)}
                 />
               </div>
             )}
-            <div
-              className="relative flex min-h-[512px] w-full max-w-[411px] shrink-0 flex-col overflow-hidden rounded-[18px] bg-white shadow-[0_0_12px_0_rgba(0,0,0,0.25)] self-center"
-              style={{ boxSizing: "border-box" }}
-            >
-              <ProfileCardContent
-                profile={HARI_PROFILE}
-                heroInsideScroll
-                scrollRef={profileScrollRef}
-                dogAndLocationRef={dogAndLocationRef}
-                onBeelineClick={handleBeelineClick}
-                getBeelineIconState={(id) => sectionIconState[id] ?? "default"}
-                renderSectionFollowupCard={renderSectionFollowupCard}
-              />
-            </div>
-            {/* Sticky like button: hovers at bottom of scroll area when scrolling, overlays bottom of card */}
-            <div
-              className="sticky bottom-0 z-10 flex h-24 w-full max-w-[411px] -mt-24 shrink-0 items-end justify-end self-center pb-1 pointer-events-none"
-              aria-hidden
-            >
+
+            <div className="proto-profile-card relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-[18px] bg-white shadow-[0_0_12px_0_rgba(0,0,0,0.25)]">
+                <ProfileCardContent
+                  profile={HARI_PROFILE}
+                  heroInsideScroll
+                  scrollRef={profileScrollRef}
+                  dogAndLocationRef={dogAndLocationRef}
+                  onBeelineClick={handleBeelineClick}
+                  getBeelineIconState={(id) =>
+                    sectionIconState[id] ?? "default"
+                  }
+                  renderSectionFollowupCard={renderSectionFollowupCard}
+                />
               <img
                 src="/icons/like button with spacing.svg"
                 alt="Like"
-                className={`h-auto w-[92px] object-contain object-bottom-right transition-opacity duration-300 ease-out ${likeButtonOpacity > 0 ? "pointer-events-auto" : "pointer-events-none"}`}
+                className={`absolute bottom-0 right-0 z-10 h-auto w-[var(--like-button-width)] object-contain object-bottom-right transition-opacity duration-300 ease-out ${likeButtonOpacity > 0 ? "pointer-events-auto" : "pointer-events-none"}`}
                 style={{ opacity: likeButtonOpacity }}
               />
             </div>
           </div>
 
-          </div>
-
           <BottomNav activeTab="people" onTabChange={handleTabChange} />
-        </div>
-      </PhoneFrame>
-
-      {/* Right side: panel immediately to the right of the phone */}
-      <div className="flex flex-1 min-w-0 items-center justify-start pl-4">
-        <SwipeExplanationPanel
-          onLeftArrowClick={() => setShowPassScreen(true)}
-          onRightArrowClick={() => {
-            if (!showMatchScreen && !showPostMatchChat) setShowMatchScreen(true);
-          }}
-        />
       </div>
-    </div>
+    </PhoneFrame>
   );
 }

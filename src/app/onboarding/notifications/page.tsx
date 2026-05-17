@@ -1,18 +1,22 @@
 "use client";
 
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { PhoneFrame, StatusBar } from "@/components/layout";
+import { useOnboardingEnter } from "@/lib/useOnboardingEnter";
 
 export default function NotificationsPage() {
   const router = useRouter();
 
-  const handleAllow = () => {
+  const handleAllow = useCallback(() => {
     router.push("/people");
-  };
+  }, [router]);
 
-  const handleNotNow = () => {
+  const handleNotNow = useCallback(() => {
     router.push("/people");
-  };
+  }, [router]);
+
+  useOnboardingEnter(handleAllow);
 
   return (
     <PhoneFrame>
@@ -39,7 +43,8 @@ export default function NotificationsPage() {
 
           {/* Body text - 16px, full width so it fits in two lines */}
           <p className="text-[16px] text-bumble-gray leading-[22px] text-left mb-[48px] w-full">
-            Turn on your notifications so we can let you know when you have new matches, likes, or messages.
+            Turn on your notifications so we can let you know when you have new
+            matches, likes, or messages.
           </p>
 
           {/* Spacer */}
