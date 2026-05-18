@@ -4,10 +4,10 @@ import { Check, MapPin, Phone, X } from "lucide-react";
 import Image from "next/image";
 
 const cardClassName =
-  "flex w-full max-w-[24.4375rem] flex-col items-start rounded-[1rem] bg-[#FFF] p-4 shadow-[0_0_12px_0_rgba(0,0,0,0.12)]";
+  "flex w-full max-w-[24.4375rem] flex-col items-start rounded-[14px] bg-[#FFF] p-3.5 shadow-[0_0_12px_0_rgba(0,0,0,0.12)]";
 
 const tagClassName =
-  "flex h-[2.875rem] items-center gap-[0.375rem] rounded-[3rem] bg-[#F3F3F3] px-3 py-3 text-[14px] text-bumble-black";
+  "flex h-9 items-center gap-1.5 rounded-[3rem] bg-[#F3F3F3] px-2.5 py-2 text-[13px] text-bumble-black";
 
 export type BeelineIconState = "default" | "yes" | "no" | "spill-done";
 
@@ -22,11 +22,11 @@ function SectionHeader({
 }) {
   return (
     <div className="flex w-full items-center justify-between gap-2">
-      <h3 className="text-[16px] font-semibold text-bumble-black">{title}</h3>
+      <h3 className="text-[15px] font-medium text-bumble-black">{title}</h3>
       <button
         type="button"
         onClick={onBeelineClick}
-        className={`flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden ${
+        className={`flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden ${
           beelineIconState === "yes" || beelineIconState === "no" || beelineIconState === "spill-done"
             ? "rounded-[6px] bg-[#FFD93A]"
             : "rounded-lg bg-bumble-black"
@@ -42,18 +42,18 @@ function SectionHeader({
         }
       >
         {beelineIconState === "yes" ? (
-          <Check size={20} className="text-bumble-black" strokeWidth={2.5} />
+          <Check size={18} className="text-bumble-black" strokeWidth={2.5} />
         ) : beelineIconState === "no" ? (
-          <X size={18} className="text-bumble-black" strokeWidth={2.5} />
+          <X size={16} className="text-bumble-black" strokeWidth={2.5} />
         ) : beelineIconState === "spill-done" ? (
-          <Phone size={20} className="text-bumble-black" strokeWidth={2} />
+          <Phone size={18} className="text-bumble-black" strokeWidth={2} />
         ) : (
           <Image
             src="/icons/user_profile_assets/beeline_btn.svg"
             alt=""
-            width={32}
-            height={30}
-            className="h-[30px] w-[32px] object-contain"
+            width={29}
+            height={27}
+            className="h-[27px] w-[29px] object-contain"
           />
         )}
       </button>
@@ -76,16 +76,16 @@ export function ProfileSectionText({
 }) {
   return (
     <section className={cardClassName}>
-      <div className="flex w-full flex-col gap-4">
+      <div className="flex w-full flex-col gap-3">
         <SectionHeader title={title} onBeelineClick={onBeelineClick} beelineIconState={beelineIconState} />
-        <p className="text-[14px] leading-relaxed text-bumble-black">{body}</p>
+        <p className="text-[13px] leading-[18px] text-bumble-black">{body}</p>
       </div>
       {showCompliment && (
         <>
           <div className="mt-4 mb-4 w-full border-t border-[#E5E5E5]" role="separator" />
           <button
             type="button"
-            className="flex items-center gap-2 self-start text-[14px] font-normal text-bumble-black"
+            className="flex items-center gap-2 self-start text-[13px] font-normal text-bumble-black"
             aria-label="Compliment"
           >
             <Image
@@ -93,7 +93,7 @@ export function ProfileSectionText({
               alt=""
               width={117}
               height={24}
-              className="h-6 w-auto object-contain object-left"
+              className="h-5 w-auto object-contain object-left"
             />
           </button>
         </>

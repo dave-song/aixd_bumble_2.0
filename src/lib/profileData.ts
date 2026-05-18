@@ -161,7 +161,10 @@ export const DISCOVER_PROFILES: DiscoverProfile[] = [
   {
     id: "hari",
     displayName: "Hari",
-    hero: { type: "composite", src: "/icons/haris profile card.svg" },
+    hero: {
+      type: "composite",
+      src: "/icons/haris profile card.svg",
+    },
     sections: HARI_SECTIONS,
   },
   {

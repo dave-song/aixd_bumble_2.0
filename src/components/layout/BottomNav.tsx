@@ -20,7 +20,7 @@ const tabs: { id: TabId; label: string; icon?: typeof User }[] = [
 
 export function BottomNav({ activeTab = "people", onTabChange }: BottomNavProps) {
   return (
-    <div className="w-full h-[83px] bg-white border-t border-neutral-100 flex items-start justify-around pt-[10px] px-[16px]">
+    <div className="w-full h-[76px] bg-white border-t border-neutral-100 flex items-start justify-around pt-2 px-3">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
@@ -35,13 +35,13 @@ export function BottomNav({ activeTab = "people", onTabChange }: BottomNavProps)
             <div className="relative">
               {isPeople ? (
                 <BumbleLogo
-                  size={24}
+                  size={22}
                   useCurrentColor
                   className={isActive ? "text-bumble-black" : "text-neutral-400"}
                 />
               ) : Icon ? (
                 <Icon
-                  size={24}
+                  size={22}
                   className={isActive ? "text-bumble-black" : "text-neutral-400"}
                   strokeWidth={1.5}
                 />
@@ -51,7 +51,7 @@ export function BottomNav({ activeTab = "people", onTabChange }: BottomNavProps)
               )}
             </div>
             <span
-              className={`text-[11px] ${
+              className={`text-[10px] leading-tight ${
                 isActive ? "text-bumble-black font-medium" : "text-neutral-400"
               }`}
             >

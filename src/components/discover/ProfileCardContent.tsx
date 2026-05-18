@@ -22,11 +22,15 @@ interface ProfileCardContentProps {
   heroInsideScroll?: boolean;
   /** Rendered at the top of the scroll area so it scrolls with the rest of the content (e.g. Beeline popover card). */
   prependToScroll?: React.ReactNode;
+  /** When true, renders content without an internal scroll wrapper — the parent owns scrolling. */
+  disableInternalScroll?: boolean;
   scrollRef?: RefObject<HTMLDivElement | null>;
   dogAndLocationRef?: RefObject<HTMLDivElement | null>;
   onBeelineClick?: (sectionId: BeelineSectionId) => void;
   getBeelineIconState?: (sectionId: BeelineSectionId) => BeelineIconState;
   renderSectionFollowupCard?: (sectionId: BeelineSectionId) => React.ReactNode;
+  heroLayout?: "default" | "people";
+  onSuperLike?: () => void;
 }
 
 export function ProfileCardContent({
@@ -34,31 +38,47 @@ export function ProfileCardContent({
   customHero,
   heroInsideScroll = false,
   prependToScroll,
+  disableInternalScroll = false,
   scrollRef,
   dogAndLocationRef,
   onBeelineClick,
   getBeelineIconState = () => "default",
   renderSectionFollowupCard = () => null,
+  heroLayout = "default",
+  onSuperLike,
 }: ProfileCardContentProps) {
   const s = profile.sections;
   const photo = (name: string) => `${PHOTO_PATH}/${name}`;
+  const skipBioSection =
+    heroLayout === "people" && profile.hero.type === "composite";
   const heroNode = customHero ?? (
-    <ProfileHero hero={profile.hero} alt={profile.id} />
+    <ProfileHero
+      hero={profile.hero}
+      alt={profile.id}
+      layout={heroLayout}
+      onSuperLike={onSuperLike}
+    />
   );
 
   const scrollContent = (
     <>
       {heroInsideScroll ? heroNode : null}
-      <div className="flex flex-col gap-4 px-[10px]">
-        <ProfileSectionText
-          title={s.bio.title}
-          body={s.bio.body}
-          onBeelineClick={
-            onBeelineClick ? () => onBeelineClick("my-bio") : undefined
-          }
-          beelineIconState={getBeelineIconState("my-bio")}
-        />
-        {renderSectionFollowupCard("my-bio")}
+      <div
+        className={`flex flex-col gap-4 px-[10px] ${heroLayout === "people" ? "pt-0" : ""}`}
+      >
+        {!skipBioSection && (
+          <>
+            <ProfileSectionText
+              title={s.bio.title}
+              body={s.bio.body}
+              onBeelineClick={
+                onBeelineClick ? () => onBeelineClick("my-bio") : undefined
+              }
+              beelineIconState={getBeelineIconState("my-bio")}
+            />
+            {renderSectionFollowupCard("my-bio")}
+          </>
+        )}
         <ProfileSectionTags
           title={s.aboutMe.title}
           tags={s.aboutMe.tags}
@@ -181,10 +201,19 @@ export function ProfileCardContent({
     </>
   );
 
+  if (disableInternalScroll) {
+    return (
+      <div className="flex flex-col overflow-x-hidden bg-white pb-10">
+        {prependToScroll}
+        {scrollContent}
+      </div>
+    );
+  }
+
   const scrollDiv = (
     <div
       ref={scrollRef as RefObject<HTMLDivElement>}
-      className="profile-scroll flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overflow-x-hidden bg-[#FFFFFF] pb-12 pt-0"
+      className="profile-scroll flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overflow-x-hidden bg-[#FFFFFF] pb-10 pt-0"
     >
       {prependToScroll}
       {scrollContent}
@@ -220,7 +249,11 @@ function PhotoBlock({
     <div className="flex w-full flex-col gap-3">
       {/* Image + overlay only: overlay is positioned relative to the image so it stays at bottom of picture when Beeline card expands below */}
       <div className="relative w-full">
-        <img src={imageSrc} alt="" className="w-full rounded-2xl object-cover" />
+        <img
+          src={imageSrc}
+          alt=""
+          className="w-full rounded-2xl object-cover"
+        />
         <div
           className="absolute bottom-4 left-0 right-0 flex items-center justify-between"
           style={{ paddingLeft: 16, paddingRight: 16 }}

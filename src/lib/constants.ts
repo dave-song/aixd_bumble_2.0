@@ -25,10 +25,19 @@ export function scalePx(px: number): number {
   return Math.round(px * (dimensions.frameWidth / LEGACY_FRAME_WIDTH));
 }
 
+/** Figma Rectangle 1430106558 / haris profile card.svg — 25.6875rem × 44.5rem */
+export const HARI_PROFILE_CARD = {
+  width: 411,
+  height: 712,
+} as const;
+
 /** Common scaled sizes (411→373, 512→flex, etc.) */
 export const scaled = {
   profileCardWidth: scalePx(411),
-  likeButtonWidth: scalePx(92),
+  hariProfileCardWidth: scalePx(HARI_PROFILE_CARD.width),
+  likeButtonWidth: scalePx(66),
+  complimentButtonSize: scalePx(44),
+  headerIconSize: scalePx(32),
   headerBeelineRight: scalePx(52),
   discoverCardWidth: scalePx(315),
   discoverCardHeight: scalePx(473),

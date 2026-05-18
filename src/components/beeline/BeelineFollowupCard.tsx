@@ -69,7 +69,7 @@ export function BeelineFollowupCard({
 
   return (
     <motion.div
-      className="w-full overflow-hidden rounded-2xl border border-[#E8D5A3] bg-bumble-yellow-light shadow-sm"
+      className="w-full overflow-hidden rounded-[14px] border border-[#E8D5A3] bg-bumble-yellow-light shadow-sm"
       initial={{
         opacity: 0,
         y: -12,
@@ -86,8 +86,8 @@ export function BeelineFollowupCard({
       onAnimationComplete={handleAnimationComplete}
     >
       {/* Question text with typewriter */}
-      <div className="px-4 pt-4 pb-3">
-        <p className="min-h-11 text-[16px] leading-[22px] tracking-[-0.5px] text-bumble-black">
+      <div className="px-3.5 pt-3 pb-2">
+        <p className="min-h-[38px] text-[14px] leading-[19px] tracking-[-0.5px] text-bumble-black">
           {question.slice(0, typedLength)}
           {typedLength < question.length && (
             <span className="animate-pulse">|</span>
@@ -96,11 +96,11 @@ export function BeelineFollowupCard({
       </div>
 
       {/* Buttons: Yes, No, Actually... */}
-      <div className="flex w-full items-stretch gap-2 px-4 pb-4">
+      <div className="flex w-full items-stretch gap-1.5 px-3.5 pb-3">
         <button
           type="button"
           onClick={handleYes}
-          className={`shrink-0 rounded-[10px] border px-4 py-2 text-[16px] font-normal tracking-[-0.5px] ${
+          className={`shrink-0 rounded-[8px] border px-2 py-[6px] text-[14px] font-normal tracking-[-0.5px] min-w-[72px] ${
             selectedAnswer === "yes"
               ? "border-bumble-black bg-[#FFD93A] text-[#1F1F1F]"
               : "border-[#E5E5E5] bg-white text-[#1F1F1F]"
@@ -111,7 +111,7 @@ export function BeelineFollowupCard({
         <button
           type="button"
           onClick={handleNo}
-          className={`shrink-0 rounded-[10px] border px-4 py-2 text-[16px] font-normal tracking-[-0.5px] ${
+          className={`shrink-0 rounded-[8px] border px-2 py-[6px] text-[14px] font-normal tracking-[-0.5px] min-w-[72px] ${
             selectedAnswer === "no"
               ? "border-bumble-black bg-[#FFD93A] text-[#1F1F1F]"
               : "border-transparent bg-[#363636] text-white"
@@ -122,7 +122,7 @@ export function BeelineFollowupCard({
         <button
           type="button"
           onClick={handleSpillButton}
-          className={`flex min-w-0 flex-1 items-center justify-center gap-2 rounded-[10px] px-3 py-2 text-[16px] font-normal tracking-[-0.5px] ${
+          className={`flex min-h-[30px] min-w-0 flex-1 items-center justify-center gap-1.5 rounded-[8px] px-2 py-[6px] text-[14px] font-normal tracking-[-0.5px] ${
             isSpillDone
               ? "bg-[#FFD93A] text-bumble-black"
               : "bg-[#1F1F1F] text-white"
@@ -130,7 +130,7 @@ export function BeelineFollowupCard({
         >
           {isSpillDone ? (
             <>
-              <Check size={20} className="shrink-0" strokeWidth={2.5} />
+              <Check size={16} className="shrink-0" strokeWidth={2.5} />
               <span>Done!</span>
             </>
           ) : isSpilling ? (
@@ -143,7 +143,7 @@ export function BeelineFollowupCard({
             </>
           ) : (
             <>
-              <Phone size={18} className="shrink-0" />
+              <Phone size={16} className="shrink-0" />
               <span className="truncate">Actually, let&apos;s spill...</span>
             </>
           )}

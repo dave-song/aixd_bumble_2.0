@@ -9,13 +9,14 @@
   --color-bumble-gray: #575656;
   --color-bumble-gray-light: #f5f5f5;
   --color-bumble-white: #ffffff;
-  
+
   /* Profile Card Shadow */
   --shadow-card: 0 0 12px rgba(0, 0, 0, 0.25);
-  
+
   /* Font Family */
-  --font-sans: "Euclid Circular A", "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
-  
+  --font-sans:
+    "Euclid Circular A", "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+
   /* Portfolio iframe: iPhone 14/15 logical viewport */
   --frame-width: 390px;
   --frame-height: 844px;
@@ -24,7 +25,37 @@
   --content-scale: calc(var(--frame-width) / var(--legacy-frame-width));
   --profile-card-width: 373px;
   --content-inset-x: 10px;
-  --like-button-width: 83px;
+  /* Figma card 25.6875rem × 44.5rem (411×712) scaled to 390px frame */
+  --people-profile-card-artboard-width: 411;
+  --people-profile-card-artboard-height: 712;
+  --people-profile-card-width: calc(
+    var(--people-profile-card-artboard-width) * var(--frame-width) /
+      var(--legacy-frame-width)
+  );
+  /* Scaled height of haris profile card.svg at people-profile-card-width */
+  --people-composite-hero-height: calc(
+    var(--people-profile-card-width) *
+      var(--people-profile-card-artboard-height) /
+      var(--people-profile-card-artboard-width)
+  );
+  --people-content-inset-x: calc(
+    (var(--frame-width) - var(--people-profile-card-width)) / 2
+  );
+  --status-bar-height: calc(
+    61 * var(--frame-width) / var(--legacy-frame-width)
+  );
+  --people-chrome-height: calc(var(--status-bar-height) + 42px + 76px);
+  --people-hero-min-height: calc(
+    var(--frame-height) - var(--people-chrome-height)
+  );
+  --like-button-width: 60px;
+  --compliment-button-size: 40px;
+  --superlike-button-size: 66px;
+  --superlike-button-visual-size: 66px;
+  --superlike-button-hit-width: 92px;
+  --superlike-button-hit-height: 102px;
+  --header-icon-size: 29px;
+  --header-actions-gap: 14px;
 }
 
 /* Lock document to embed viewport (390×844) */
@@ -61,10 +92,51 @@ body {
 /* Profile card: full width within frame minus horizontal inset */
 .proto-profile-card {
   box-sizing: border-box;
-  width: min(var(--profile-card-width), calc(100% - 2 * var(--content-inset-x)));
+  width: min(
+    var(--profile-card-width),
+    calc(100% - 2 * var(--content-inset-x))
+  );
   max-width: var(--profile-card-width);
   margin-left: auto;
   margin-right: auto;
+}
+
+.proto-profile-card--people {
+  width: 100%;
+  max-width: 100%;
+  height: var(--people-composite-hero-height);
+  max-height: var(--people-composite-hero-height);
+  margin-left: 0;
+  margin-right: 0;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.people-profile-scroll {
+  flex: 1;
+  min-height: 0;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.people-profile-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Shared horizontal bounds for People header + profile card */
+.people-page-shell {
+  box-sizing: border-box;
+  width: 100%;
+  padding-left: var(--people-content-inset-x);
+  padding-right: var(--people-content-inset-x);
+}
+
+/* Full-bleed composite hero — preserve Figma 411:712 ratio */
+.people-composite-hero-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 411 / 712;
 }
 
 /* Force scrollbar hidden on profile scroll so content fills full width */

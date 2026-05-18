@@ -3,6 +3,7 @@
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { PhoneFrame, StatusBar } from "@/components/layout";
+import { OnboardingBackButton } from "@/components/onboarding/OnboardingNavButtons";
 import { useOnboardingEnter } from "@/lib/useOnboardingEnter";
 
 export default function NotificationsPage() {
@@ -20,11 +21,15 @@ export default function NotificationsPage() {
 
   return (
     <PhoneFrame>
-      <div className="relative w-full h-full bg-white flex flex-col">
+      <div className="relative flex h-full w-full flex-col bg-white">
         <StatusBar />
 
+        <div className="flex justify-start px-[20px] pb-[8px] pt-[12px]">
+          <OnboardingBackButton />
+        </div>
+
         {/* Content - left-aligned layout */}
-        <div className="flex-1 flex flex-col items-start px-[20px] pt-[48px]">
+        <div className="flex-1 flex flex-col items-start px-[20px] pt-[16px]">
           {/* Bell illustration - 80x80px, left aligned */}
           <div className="w-[80px] h-[80px] flex items-center justify-start mb-[32px] shrink-0">
             <img
