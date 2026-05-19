@@ -10,10 +10,12 @@ import type { BeelineIconState } from "@/components/profile";
 import { MatchScreen } from "@/components/discover/MatchScreen";
 import { PassScreen } from "@/components/discover/PassScreen";
 import { PostMatchChatScreen } from "@/components/discover/PostMatchChatScreen";
+import { PeopleSuperLikeButton } from "@/components/discover/PeopleSuperLikeButton";
 import { ProfileCardContent } from "@/components/discover/ProfileCardContent";
 import type { BeelineSectionId } from "@/lib/beelineSectionQuestions";
 import { BEELINE_SECTION_QUESTIONS } from "@/lib/beelineSectionQuestions";
 import { DISCOVER_PROFILES } from "@/lib/profileData";
+import { usePeopleSuperLikeFade } from "@/lib/usePeopleSuperLikeFade";
 
 const HARI_PROFILE = DISCOVER_PROFILES[0];
 const OPENING_MOVE_PLACEHOLDER = "What's your ideal first date?";
@@ -22,7 +24,14 @@ const HARI_AVATAR = "/icons/match_process_assets/haris_profile_pic.png";
 export default function PeoplePage() {
   const router = useRouter();
   const followupCardRef = useRef<HTMLDivElement>(null);
+  const profileScrollRef = useRef<HTMLDivElement>(null);
   const dogAndLocationRef = useRef<HTMLDivElement>(null);
+  const profileBottomRef = useRef<HTMLDivElement>(null);
+  const superLikeOpacity = usePeopleSuperLikeFade(
+    profileScrollRef,
+    dogAndLocationRef,
+    profileBottomRef,
+  );
 
   const [openBeelineSection, setOpenBeelineSection] =
     useState<BeelineSectionId | null>(null);
@@ -146,23 +155,30 @@ export default function PeoplePage() {
         <div className="people-page-shell flex min-h-0 flex-1 flex-col">
           <PeopleTopHeader />
 
-          <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
-            <div className="proto-profile-card proto-profile-card--people relative flex shrink-0 flex-col overflow-hidden rounded-[18px] bg-white shadow-[0_0_12px_0_rgba(0,0,0,0.25)]">
-              <div className="people-profile-scroll flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
+          <div className="people-profile-card-host">
+            <div className="proto-profile-card proto-profile-card--people relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-[18px] bg-white">
+              <div
+                ref={profileScrollRef}
+                className="people-profile-scroll flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto"
+              >
                 <ProfileCardContent
                   profile={HARI_PROFILE}
                   heroInsideScroll
                   heroLayout="people"
                   disableInternalScroll
                   dogAndLocationRef={dogAndLocationRef}
+                  profileBottomRef={profileBottomRef}
                   onBeelineClick={handleBeelineClick}
-                  onSuperLike={() => setShowMatchScreen(true)}
                   getBeelineIconState={(id) =>
                     sectionIconState[id] ?? "default"
                   }
                   renderSectionFollowupCard={renderSectionFollowupCard}
                 />
               </div>
+              <PeopleSuperLikeButton
+                opacity={superLikeOpacity}
+                onClick={() => setShowMatchScreen(true)}
+              />
             </div>
           </div>
         </div>

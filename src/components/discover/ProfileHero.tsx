@@ -43,14 +43,6 @@ export function ProfileHero({
             height={HARI_PROFILE_CARD.height}
             className="people-composite-hero-img"
           />
-          {onSuperLike && (
-            <button
-              type="button"
-              onClick={onSuperLike}
-              className="absolute bottom-[4%] right-[3%] z-10 h-[var(--superlike-button-hit-height)] w-[var(--superlike-button-hit-width)] opacity-0"
-              aria-label="Super like"
-            />
-          )}
         </div>
       );
     }

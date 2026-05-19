@@ -29,11 +29,11 @@ export function PassScreen({ onClose }: PassScreenProps) {
       <div className="people-page-shell flex min-h-0 flex-1 flex-col">
         <PeopleTopHeader />
 
-        <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
-          <div className="proto-profile-card proto-profile-card--people relative flex w-full shrink-0 flex-col overflow-hidden rounded-[18px] bg-[#FFFFFF] shadow-[0_0_12px_0_rgba(0,0,0,0.25)]">
+        <div className="people-profile-card-host">
+          <div className="proto-profile-card proto-profile-card--people relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-[18px] bg-[#FFFFFF]">
             <div
               ref={profileScrollRef}
-              className="people-profile-scroll flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden"
+              className="people-profile-scroll flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto"
             >
               <ProfileCardContent
                 profile={elenaProfile}

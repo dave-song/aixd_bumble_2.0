@@ -54,6 +54,15 @@
   --superlike-button-visual-size: 66px;
   --superlike-button-hit-width: 92px;
   --superlike-button-hit-height: 102px;
+  /* Super-like inset from card edge (tuned from Figma 18px / 28px at 411px width) */
+  --superlike-inset-right: calc(
+    5 * var(--people-profile-card-width) /
+      var(--people-profile-card-artboard-width)
+  );
+  --superlike-inset-bottom: calc(
+    0.5 * var(--people-profile-card-width) /
+      var(--people-profile-card-artboard-width)
+  );
   --header-icon-size: 29px;
   --header-actions-gap: 14px;
 }
@@ -119,8 +128,26 @@ body {
   scrollbar-width: none;
 }
 
+/* Let profile content define scroll height (flex children default to min-height: auto shrink) */
+.people-profile-scroll > * {
+  flex-shrink: 0;
+}
+
 .people-profile-scroll::-webkit-scrollbar {
   display: none;
+}
+
+.people-superlike-fixed {
+  position: absolute;
+  z-index: 10;
+  right: var(--superlike-inset-right);
+  bottom: var(--superlike-inset-bottom);
+  display: flex;
+  height: var(--superlike-button-hit-height);
+  width: var(--superlike-button-hit-width);
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
 }
 
 /* Shared horizontal bounds for People header + profile card */

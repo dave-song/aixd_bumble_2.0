@@ -26,6 +26,7 @@ interface ProfileCardContentProps {
   disableInternalScroll?: boolean;
   scrollRef?: RefObject<HTMLDivElement | null>;
   dogAndLocationRef?: RefObject<HTMLDivElement | null>;
+  profileBottomRef?: RefObject<HTMLDivElement | null>;
   onBeelineClick?: (sectionId: BeelineSectionId) => void;
   getBeelineIconState?: (sectionId: BeelineSectionId) => BeelineIconState;
   renderSectionFollowupCard?: (sectionId: BeelineSectionId) => React.ReactNode;
@@ -41,6 +42,7 @@ export function ProfileCardContent({
   disableInternalScroll = false,
   scrollRef,
   dogAndLocationRef,
+  profileBottomRef,
   onBeelineClick,
   getBeelineIconState = () => "default",
   renderSectionFollowupCard = () => null,
@@ -60,145 +62,152 @@ export function ProfileCardContent({
     />
   );
 
-  const scrollContent = (
-    <>
-      {heroInsideScroll ? heroNode : null}
+  const sectionsBlock = (
+    <div className="flex flex-col gap-4 px-[10px]">
+      {!skipBioSection && (
+        <>
+          <ProfileSectionText
+            title={s.bio.title}
+            body={s.bio.body}
+            onBeelineClick={
+              onBeelineClick ? () => onBeelineClick("my-bio") : undefined
+            }
+            beelineIconState={getBeelineIconState("my-bio")}
+          />
+          {renderSectionFollowupCard("my-bio")}
+        </>
+      )}
+      <ProfileSectionTags
+        title={s.aboutMe.title}
+        tags={s.aboutMe.tags}
+        onBeelineClick={
+          onBeelineClick ? () => onBeelineClick("about-me") : undefined
+        }
+        beelineIconState={getBeelineIconState("about-me")}
+      />
+      {renderSectionFollowupCard("about-me")}
+      <PhotoBlock
+        imageSrc={photo(s.photoSlots[0] ?? "p1.png")}
+        onBeelineClick={
+          onBeelineClick ? () => onBeelineClick("picture1") : undefined
+        }
+        renderCard={renderSectionFollowupCard("picture1")}
+      />
+      <ProfileSectionTags
+        title={s.imLookingFor.title}
+        tags={s.imLookingFor.tags}
+        onBeelineClick={
+          onBeelineClick ? () => onBeelineClick("im-looking-for") : undefined
+        }
+        beelineIconState={getBeelineIconState("im-looking-for")}
+      />
+      {renderSectionFollowupCard("im-looking-for")}
+      <ProfileSectionTags
+        title={s.myInterests.title}
+        tags={s.myInterests.tags}
+        onBeelineClick={
+          onBeelineClick ? () => onBeelineClick("my-interests") : undefined
+        }
+        beelineIconState={getBeelineIconState("my-interests")}
+      />
+      {renderSectionFollowupCard("my-interests")}
+      <PhotoBlock
+        imageSrc={photo(s.photoSlots[1] ?? "p2.png")}
+        onBeelineClick={
+          onBeelineClick ? () => onBeelineClick("picture2") : undefined
+        }
+        renderCard={renderSectionFollowupCard("picture2")}
+      />
+      <ProfileSectionText
+        title={s.whenIUnplug.title}
+        body={s.whenIUnplug.body}
+        onBeelineClick={
+          onBeelineClick ? () => onBeelineClick("when-i-unplug") : undefined
+        }
+        beelineIconState={getBeelineIconState("when-i-unplug")}
+      />
+      {renderSectionFollowupCard("when-i-unplug")}
+      <PhotoBlock
+        imageSrc={photo(s.photoSlots[2] ?? "p3.png")}
+        onBeelineClick={
+          onBeelineClick ? () => onBeelineClick("picture3") : undefined
+        }
+        renderCard={renderSectionFollowupCard("picture3")}
+      />
+      <ProfileSectionTags
+        title={s.myCauses.title}
+        tags={s.myCauses.tags}
+        onBeelineClick={
+          onBeelineClick ? () => onBeelineClick("my-causes") : undefined
+        }
+        beelineIconState={getBeelineIconState("my-causes")}
+      />
+      {renderSectionFollowupCard("my-causes")}
+      <ProfileSectionText
+        title={s.myFavoriteQuality.title}
+        body={s.myFavoriteQuality.body}
+        onBeelineClick={
+          onBeelineClick
+            ? () => onBeelineClick("my-favorite-quality")
+            : undefined
+        }
+        beelineIconState={getBeelineIconState("my-favorite-quality")}
+      />
+      {renderSectionFollowupCard("my-favorite-quality")}
       <div
-        className={`flex flex-col gap-4 px-[10px] ${heroLayout === "people" ? "pt-0" : ""}`}
+        ref={dogAndLocationRef as RefObject<HTMLDivElement>}
+        className="flex flex-col gap-4"
       >
-        {!skipBioSection && (
-          <>
-            <ProfileSectionText
-              title={s.bio.title}
-              body={s.bio.body}
-              onBeelineClick={
-                onBeelineClick ? () => onBeelineClick("my-bio") : undefined
-              }
-              beelineIconState={getBeelineIconState("my-bio")}
-            />
-            {renderSectionFollowupCard("my-bio")}
-          </>
-        )}
-        <ProfileSectionTags
-          title={s.aboutMe.title}
-          tags={s.aboutMe.tags}
-          onBeelineClick={
-            onBeelineClick ? () => onBeelineClick("about-me") : undefined
-          }
-          beelineIconState={getBeelineIconState("about-me")}
-        />
-        {renderSectionFollowupCard("about-me")}
         <PhotoBlock
-          imageSrc={photo(s.photoSlots[0] ?? "p1.png")}
+          imageSrc={photo(s.photoSlots[3] ?? "p4.png")}
           onBeelineClick={
-            onBeelineClick ? () => onBeelineClick("picture1") : undefined
+            onBeelineClick ? () => onBeelineClick("picture4") : undefined
           }
-          renderCard={renderSectionFollowupCard("picture1")}
+          renderCard={renderSectionFollowupCard("picture4")}
         />
-        <ProfileSectionTags
-          title={s.imLookingFor.title}
-          tags={s.imLookingFor.tags}
+        <ProfileSectionLocation
+          location={s.location}
           onBeelineClick={
-            onBeelineClick ? () => onBeelineClick("im-looking-for") : undefined
+            onBeelineClick ? () => onBeelineClick("my-location") : undefined
           }
-          beelineIconState={getBeelineIconState("im-looking-for")}
+          beelineIconState={getBeelineIconState("my-location")}
         />
-        {renderSectionFollowupCard("im-looking-for")}
-        <ProfileSectionTags
-          title={s.myInterests.title}
-          tags={s.myInterests.tags}
-          onBeelineClick={
-            onBeelineClick ? () => onBeelineClick("my-interests") : undefined
-          }
-          beelineIconState={getBeelineIconState("my-interests")}
+        {renderSectionFollowupCard("my-location")}
+      </div>
+      <div
+        ref={profileBottomRef as RefObject<HTMLDivElement>}
+        className="flex w-full max-w-[24.4375rem] flex-col items-center justify-center gap-2 py-6"
+      >
+        <img
+          src="/icons/user_profile_assets/bottom decision bar section.svg"
+          alt="Pass, Super like, Like"
+          className="h-auto w-full object-contain object-center"
         />
-        {renderSectionFollowupCard("my-interests")}
-        <PhotoBlock
-          imageSrc={photo(s.photoSlots[1] ?? "p2.png")}
-          onBeelineClick={
-            onBeelineClick ? () => onBeelineClick("picture2") : undefined
-          }
-          renderCard={renderSectionFollowupCard("picture2")}
-        />
-        <ProfileSectionText
-          title={s.whenIUnplug.title}
-          body={s.whenIUnplug.body}
-          onBeelineClick={
-            onBeelineClick ? () => onBeelineClick("when-i-unplug") : undefined
-          }
-          beelineIconState={getBeelineIconState("when-i-unplug")}
-        />
-        {renderSectionFollowupCard("when-i-unplug")}
-        <PhotoBlock
-          imageSrc={photo(s.photoSlots[2] ?? "p3.png")}
-          onBeelineClick={
-            onBeelineClick ? () => onBeelineClick("picture3") : undefined
-          }
-          renderCard={renderSectionFollowupCard("picture3")}
-        />
-        <ProfileSectionTags
-          title={s.myCauses.title}
-          tags={s.myCauses.tags}
-          onBeelineClick={
-            onBeelineClick ? () => onBeelineClick("my-causes") : undefined
-          }
-          beelineIconState={getBeelineIconState("my-causes")}
-        />
-        {renderSectionFollowupCard("my-causes")}
-        <ProfileSectionText
-          title={s.myFavoriteQuality.title}
-          body={s.myFavoriteQuality.body}
-          onBeelineClick={
-            onBeelineClick
-              ? () => onBeelineClick("my-favorite-quality")
-              : undefined
-          }
-          beelineIconState={getBeelineIconState("my-favorite-quality")}
-        />
-        {renderSectionFollowupCard("my-favorite-quality")}
-        <div
-          ref={dogAndLocationRef as RefObject<HTMLDivElement>}
-          className="flex flex-col gap-4"
-        >
-          <PhotoBlock
-            imageSrc={photo(s.photoSlots[3] ?? "p4.png")}
-            onBeelineClick={
-              onBeelineClick ? () => onBeelineClick("picture4") : undefined
-            }
-            renderCard={renderSectionFollowupCard("picture4")}
-          />
-          <ProfileSectionLocation
-            location={s.location}
-            onBeelineClick={
-              onBeelineClick ? () => onBeelineClick("my-location") : undefined
-            }
-            beelineIconState={getBeelineIconState("my-location")}
-          />
-          {renderSectionFollowupCard("my-location")}
-        </div>
-        <div className="flex w-full max-w-[24.4375rem] flex-col items-center justify-center gap-2 py-6">
-          <img
-            src="/icons/user_profile_assets/bottom decision bar section.svg"
-            alt="Pass, Super like, Like"
-            className="h-auto w-full object-contain object-center"
-          />
-          <div className="flex flex-col items-center gap-0.5 text-center">
-            <button
-              type="button"
-              className="my-6 text-[14px] font-medium text-bumble-black"
-            >
-              Block
-            </button>
-            <button
-              type="button"
-              className="text-[14px] font-medium text-red-600"
-            >
-              Report
-            </button>
-          </div>
+        <div className="flex flex-col items-center gap-0.5 text-center">
+          <button
+            type="button"
+            className="my-6 text-[14px] font-medium text-bumble-black"
+          >
+            Block
+          </button>
+          <button
+            type="button"
+            className="text-[14px] font-medium text-red-600"
+          >
+            Report
+          </button>
         </div>
       </div>
-    </>
+    </div>
+  );
+
+  const scrollContent = heroInsideScroll ? (
+    <div className="flex flex-col gap-4">
+      {heroNode}
+      {sectionsBlock}
+    </div>
+  ) : (
+    sectionsBlock
   );
 
   if (disableInternalScroll) {

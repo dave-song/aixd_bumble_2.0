@@ -29,6 +29,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${plusJakarta.variable} font-sans antialiased app-prototype-root`}
+        suppressHydrationWarning
       >
         {children}
       </body>
