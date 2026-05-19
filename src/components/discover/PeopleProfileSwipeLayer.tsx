@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   animate,
   motion,
@@ -13,9 +13,9 @@ import { useDrag } from "@use-gesture/react";
 const MATCHING_CHECK_SRC =
   "/icons/match_process_assets/matching_check.svg";
 
-const SWIPE_DISTANCE_PX = 110;
-const SWIPE_VELOCITY = 0.45;
-const INTENT_THRESHOLD_PX = 12;
+const SWIPE_DISTANCE_PX = 100;
+const SWIPE_VELOCITY = 0.4;
+const INTENT_THRESHOLD_PX = 8;
 
 interface PeopleProfileSwipeLayerProps {
   children: ReactNode;
@@ -24,6 +24,13 @@ interface PeopleProfileSwipeLayerProps {
 }
 
 type DragIntent = null | "swipe" | "scroll";
+
+function isInteractiveSwipeTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof Element)) return false;
+  return Boolean(
+    target.closest("button, a, input, textarea, [data-no-swipe]"),
+  );
+}
 
 /**
  * Right-only swipe on the People profile card. Horizontal drags trigger a
@@ -43,6 +50,19 @@ export function PeopleProfileSwipeLayer({
   const rotate = useTransform(x, [0, 220], [0, 12]);
   const likeOpacity = useTransform(x, [0, 60, 140], [0, 0.6, 1]);
 
+  useEffect(() => {
+    const el = hostRef.current;
+    if (!el) return;
+
+    const blockNativeDrag = (event: DragEvent) => {
+      if (disabled) return;
+      event.preventDefault();
+    };
+
+    el.addEventListener("dragstart", blockNativeDrag, true);
+    return () => el.removeEventListener("dragstart", blockNativeDrag, true);
+  }, [disabled]);
+
   const bind = useDrag(
     ({
       movement: [mx, my],
@@ -58,8 +78,7 @@ export function PeopleProfileSwipeLayer({
       if (first) {
         intentRef.current = null;
         animRef.current?.stop();
-        const target = event?.target as HTMLElement | undefined;
-        if (target?.closest("button, a, input, textarea, [data-no-swipe]")) {
+        if (isInteractiveSwipeTarget(event?.target ?? null)) {
           intentRef.current = "scroll";
         }
       }
@@ -69,17 +88,25 @@ export function PeopleProfileSwipeLayer({
         return;
       }
 
+      const absX = Math.abs(mx);
+      const absY = Math.abs(my);
+
       if (
         intentRef.current === null &&
-        (Math.abs(mx) > INTENT_THRESHOLD_PX || Math.abs(my) > INTENT_THRESHOLD_PX)
+        (absX > INTENT_THRESHOLD_PX || absY > INTENT_THRESHOLD_PX)
       ) {
-        if (Math.abs(my) >= Math.abs(mx) || mx <= 0) {
+        const isHorizontalIntent = absX > absY * 0.65 && mx > 0;
+        const isVerticalIntent = absY > absX * 1.1;
+
+        if (isVerticalIntent || mx <= 0) {
           intentRef.current = "scroll";
           cancel();
           return;
         }
-        intentRef.current = "swipe";
-        setIsSwiping(true);
+        if (isHorizontalIntent) {
+          intentRef.current = "swipe";
+          setIsSwiping(true);
+        }
       }
 
       if (intentRef.current !== "swipe") return;
@@ -94,7 +121,7 @@ export function PeopleProfileSwipeLayer({
         const offset = Math.max(0, mx);
         const shouldMatch =
           offset > SWIPE_DISTANCE_PX ||
-          (vx > SWIPE_VELOCITY && offset > 40);
+          (vx > SWIPE_VELOCITY && offset > 36);
 
         if (shouldMatch) {
           const width = hostRef.current?.offsetWidth ?? 390;
@@ -118,7 +145,8 @@ export function PeopleProfileSwipeLayer({
     },
     {
       filterTaps: true,
-      pointer: { touch: true },
+      pointer: { touch: true, mouse: true },
+      eventOptions: { capture: true, passive: false },
       from: () => [x.get(), 0],
     },
   );
@@ -127,8 +155,12 @@ export function PeopleProfileSwipeLayer({
     <div
       ref={hostRef}
       {...bind()}
-      className={`relative flex min-h-0 flex-1 flex-col ${isSwiping ? "touch-none" : "touch-pan-y"}`}
+      data-swiping={isSwiping ? "true" : "false"}
+      className={`people-swipe-card relative flex min-h-0 flex-1 flex-col ${
+        isSwiping ? "touch-none cursor-grabbing" : "touch-pan-y cursor-grab"
+      }`}
       style={{ touchAction: isSwiping ? "none" : "pan-y" }}
+      onDragStart={(event) => event.preventDefault()}
     >
       <motion.div
         className="relative flex min-h-0 flex-1 flex-col"
@@ -150,6 +182,7 @@ export function PeopleProfileSwipeLayer({
             alt=""
             width={127}
             height={127}
+            draggable={false}
             className="h-[127px] w-[127px] shrink-0 object-contain"
           />
         </motion.div>

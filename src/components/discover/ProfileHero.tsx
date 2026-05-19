@@ -41,6 +41,7 @@ export function ProfileHero({
             alt={alt}
             width={HARI_PROFILE_CARD.width}
             height={HARI_PROFILE_CARD.height}
+            draggable={false}
             className="people-composite-hero-img"
           />
         </div>

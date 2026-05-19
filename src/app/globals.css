@@ -137,6 +137,31 @@ body {
   display: none;
 }
 
+/* Swipe layer: stop browser image-drag / text selection from stealing horizontal drags */
+.people-swipe-card {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.people-swipe-card img {
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+.people-swipe-card button,
+.people-swipe-card a,
+.people-swipe-card input,
+.people-swipe-card textarea,
+.people-swipe-card [data-no-swipe] {
+  user-select: auto;
+  pointer-events: auto;
+}
+
+.people-swipe-card[data-swiping="true"] .people-profile-scroll {
+  overflow: hidden;
+}
+
 .people-superlike-fixed {
   position: absolute;
   z-index: 10;

@@ -4,7 +4,7 @@ import { Check, MapPin, Phone, X } from "lucide-react";
 import Image from "next/image";
 
 const cardClassName =
-  "flex w-full max-w-[24.4375rem] flex-col items-start rounded-[14px] bg-[#FFF] p-3.5";
+  "flex w-full max-w-[24.4375rem] flex-col items-start rounded-[14px] bg-[#FFF] p-3.5 shadow-[0_0_12px_0_rgba(0,0,0,0.12)]";
 
 const tagClassName =
   "flex h-9 items-center gap-1.5 rounded-[3rem] bg-[#F3F3F3] px-2.5 py-2 text-[13px] text-bumble-black";
