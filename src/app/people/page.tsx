@@ -10,6 +10,7 @@ import type { BeelineIconState } from "@/components/profile";
 import { MatchScreen } from "@/components/discover/MatchScreen";
 import { PassScreen } from "@/components/discover/PassScreen";
 import { PostMatchChatScreen } from "@/components/discover/PostMatchChatScreen";
+import { PeopleProfileSwipeLayer } from "@/components/discover/PeopleProfileSwipeLayer";
 import { PeopleSuperLikeButton } from "@/components/discover/PeopleSuperLikeButton";
 import { ProfileCardContent } from "@/components/discover/ProfileCardContent";
 import type { BeelineSectionId } from "@/lib/beelineSectionQuestions";
@@ -155,8 +156,17 @@ export default function PeoplePage() {
         <div className="people-page-shell flex min-h-0 flex-1 flex-col">
           <PeopleTopHeader />
 
-          <div className="people-profile-card-host">
-            <div className="proto-profile-card proto-profile-card--people relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-[18px] bg-white">
+          <div className="people-profile-card-host flex min-h-0 flex-1 flex-col">
+            <PeopleProfileSwipeLayer
+              onSwipeRight={() => setShowMatchScreen(true)}
+              disabled={
+                showMatchScreen ||
+                showPassScreen ||
+                showPostMatchChat ||
+                openBeelineSection !== null
+              }
+            >
+              <div className="proto-profile-card proto-profile-card--people relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-[18px] bg-white">
               <div
                 ref={profileScrollRef}
                 className="people-profile-scroll flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto"
@@ -180,6 +190,7 @@ export default function PeoplePage() {
                 onClick={() => setShowMatchScreen(true)}
               />
             </div>
+            </PeopleProfileSwipeLayer>
           </div>
         </div>
 
